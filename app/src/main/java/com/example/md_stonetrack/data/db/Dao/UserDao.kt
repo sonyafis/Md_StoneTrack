@@ -17,10 +17,4 @@ interface UserDao {
 
     @Query("DELETE FROM user_table")
     suspend fun clearUser()
-
-    @Query("SELECT access FROM user_table LIMIT 1")
-    suspend fun getAccessToken(): String?
-
-    @Query("SELECT refresh FROM user_table LIMIT 1")
-    suspend fun getRefreshToken(): String?
 }

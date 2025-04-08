@@ -30,13 +30,17 @@ class AuthRepositoryImpl(
             if (response.isSuccessful) {
                 response.body()?.let { authResponse ->
                     if (authResponse.access != null && authResponse.refresh != null) {
-                        // Сохраняем в Room
+                        // Сохраняем токены в DataStore
+                        saveTokens(authResponse.access, authResponse.refresh)
+
+                        // Сохраняем данные пользователя в Room
                         userDao.upsertUser(
                             UserEntity(
-                                access = authResponse.access,
-                                refresh = authResponse.refresh
+                                name = username,  // Здесь можно добавить другие данные пользователя
+                                email = username // Или использовать данные из authResponse, если есть
                             )
                         )
+
                         AuthResult.Success(AuthTokens(authResponse.access, authResponse.refresh))
                     } else {
                         AuthResult.Error("Tokens are missing in response")
@@ -50,24 +54,16 @@ class AuthRepositoryImpl(
         }
     }
 
-
-    override suspend fun register(username: String, email: String, password: String): Result<Unit> {
-        return try {
-            val response = apiService.register(AuthRequest(username, password))
-            if (response.isSuccessful) {
-                Result.success(Unit)
-            } else {
-                val error = response.errorBody()?.string() ?: "Unknown error"
-                Result.failure(Exception("Registration failed: $error"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
+    private suspend fun saveTokens(accessToken: String, refreshToken: String) {
+        dataStore.edit { preferences ->
+            preferences[ACCESS_TOKEN_KEY] = accessToken
+            preferences[REFRESH_TOKEN_KEY] = refreshToken
         }
     }
 
     override suspend fun logout() {
-        dataStore.edit { it.clear() }
-        userDao.clearUser()
+        dataStore.edit { it.clear() } // Очистить токены в DataStore
+        userDao.clearUser() // Очистить данные пользователя в Room
     }
 
     override suspend fun isUserAuthenticated(): Boolean {
@@ -94,13 +90,6 @@ class AuthRepositoryImpl(
             }
         } catch (e: Exception) {
             Result.failure(e)
-        }
-    }
-
-    private suspend fun saveTokens(accessToken: String, refreshToken: String) {
-        dataStore.edit { preferences ->
-            preferences[ACCESS_TOKEN_KEY] = accessToken
-            preferences[REFRESH_TOKEN_KEY] = refreshToken
         }
     }
 

@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class UserEntity(
     @PrimaryKey(autoGenerate = false)
     val id: Int = 1, // Фиксированный ID для единственного пользователя
-    val access: String,
-    val refresh: String,
+    val name: String,
+    val email: String,
     val timestamp: Long = System.currentTimeMillis()
 )
