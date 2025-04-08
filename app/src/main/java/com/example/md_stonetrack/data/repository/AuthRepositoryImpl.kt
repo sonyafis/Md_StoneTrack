@@ -14,6 +14,8 @@ import com.example.md_stonetrack.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.md_stonetrack.data.model.RefreshTokenRequest
+import com.example.md_stonetrack.data.security.CryptoManager
 
 class AuthRepositoryImpl(
     private val apiService: ApiService,
@@ -22,6 +24,7 @@ class AuthRepositoryImpl(
 ) : AuthRepository {
 
     private val dataStore = context.dataStore
+    private val cryptoManager = CryptoManager()
 
     override suspend fun login(username: String, password: String): AuthResult {
         return try {
@@ -33,13 +36,25 @@ class AuthRepositoryImpl(
                         // Сохраняем токены в DataStore
                         saveTokens(authResponse.access, authResponse.refresh)
 
-                        // Сохраняем данные пользователя в Room
-                        userDao.upsertUser(
-                            UserEntity(
-                                name = username,  // Здесь можно добавить другие данные пользователя
-                                email = username // Или использовать данные из authResponse, если есть
+                        // Получаем детали пользователя
+                        val userDetailsResponse = apiService.getUserDetails("Bearer ${authResponse.access}")
+
+                        if (userDetailsResponse.isSuccessful) {
+                            val userDetails = userDetailsResponse.body()
+
+                            // Сохраняем данные пользователя в Room
+                            userDao.upsertUser(
+                                UserEntity(
+                                    id = 1, // Фиксированный ID для одного пользователя
+                                    name = username,
+                                    email = userDetails?.email ?: "",  // Можно добавить обработку null значений
+                                    first_name = userDetails?.first_name,
+                                    last_name = userDetails?.last_name,
+                                    phone_number = userDetails?.phone_number,
+                                    type_user = userDetails?.type_user
+                                )
                             )
-                        )
+                        }
 
                         AuthResult.Success(AuthTokens(authResponse.access, authResponse.refresh))
                     } else {
@@ -55,9 +70,11 @@ class AuthRepositoryImpl(
     }
 
     private suspend fun saveTokens(accessToken: String, refreshToken: String) {
+        val encryptedAccess = cryptoManager.encrypt(accessToken)
+        val encryptedRefresh = cryptoManager.encrypt(refreshToken)
         dataStore.edit { preferences ->
-            preferences[ACCESS_TOKEN_KEY] = accessToken
-            preferences[REFRESH_TOKEN_KEY] = refreshToken
+            preferences[ACCESS_TOKEN_KEY] = encryptedAccess
+            preferences[REFRESH_TOKEN_KEY] = encryptedRefresh
         }
     }
 
@@ -71,12 +88,13 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun getAccessToken(): String? {
-        return dataStore.data.map { it[ACCESS_TOKEN_KEY] }.first()
+        val encryptedToken = dataStore.data.map { it[ACCESS_TOKEN_KEY] }.first()
+        return encryptedToken?.let { cryptoManager.decrypt(it) }
     }
 
     override suspend fun refreshTokens(refreshToken: String): Result<AuthTokens> {
         return try {
-            val response = apiService.refreshToken(com.example.md_stonetrack.data.model.RefreshTokenRequest(refreshToken))
+            val response = apiService.refreshToken(RefreshTokenRequest(refreshToken))
             if (response.isSuccessful) {
                 val authResponse = response.body()
                 if (authResponse?.access != null && authResponse.refresh != null) {

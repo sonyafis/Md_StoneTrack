@@ -9,6 +9,7 @@ import com.example.md_stonetrack.data.api.ApiService
 import com.example.md_stonetrack.data.api.RetrofitClient
 import com.example.md_stonetrack.data.db.AppDatabase
 import com.example.md_stonetrack.data.repository.OrderRepositoryImpl
+import com.example.md_stonetrack.data.security.CryptoManager
 import com.example.md_stonetrack.domain.repository.AuthRepository
 import com.example.md_stonetrack.domain.repository.OrderRepository
 import com.example.md_stonetrack.domain.usecase.LoginUseCase
@@ -28,6 +29,7 @@ val dataModule = module {
     // Room
     single { AppDatabase.getDatabase(androidContext()) }
     single { get<AppDatabase>().userDao() }
+    single { CryptoManager() }
 
     // DataStore
     single<DataStore<Preferences>> { androidContext().dataStore }

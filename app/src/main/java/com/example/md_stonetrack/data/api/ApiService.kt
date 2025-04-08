@@ -4,6 +4,7 @@ import com.example.md_stonetrack.data.model.AuthRequest
 import com.example.md_stonetrack.data.model.AuthResponse
 import com.example.md_stonetrack.data.model.OrderDTO
 import com.example.md_stonetrack.data.model.RefreshTokenRequest
+import com.example.md_stonetrack.data.model.SuperUserDTO
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -17,8 +18,8 @@ interface ApiService {
     @POST("auth/jwt/refresh/")
     suspend fun refreshToken(@Body request: RefreshTokenRequest): Response<AuthResponse>
 
-    @POST("auth/users/")
-    suspend fun register(@Body request: AuthRequest): Response<AuthResponse>
+    @GET("auth/users/me")
+    suspend fun getUserDetails(@Header("Authorization") token: String): Response<SuperUserDTO>
 
     @GET("api/orders/")
     suspend fun getOrders(@Header("Authorization") token: String): List<OrderDTO>
