@@ -19,14 +19,14 @@ class OrderRepositoryImpl(private val api: ApiService) : OrderRepository {
                         address = orderDTO.address ?: "",
                         description = orderDTO.description,
                         id_status = Status(
-                            id_status = orderDTO.id_status.id_status,
-                            status_name = orderDTO.id_status.status_name ?: "Unknown"
+                            id_status = orderDTO.id_status.id,
+                            status_name = orderDTO.id_status.name ?: "Unknown"
                         ),
                         id_client = SuperUser(
                             id_super_user = orderDTO.id_client.id_super_user,
                             username = orderDTO.id_client.username ?: "",
-                            firstname = orderDTO.id_client.firstname,
-                            lastname = orderDTO.id_client.lastname,
+                            first_name = orderDTO.id_client.first_name,
+                            last_name = orderDTO.id_client.last_name,
                             phone_number = orderDTO.id_client.phone_number,
                             email = orderDTO.id_client.email,
                             type_user = orderDTO.id_client.type_user
@@ -35,8 +35,8 @@ class OrderRepositoryImpl(private val api: ApiService) : OrderRepository {
                             SuperUser(
                                 id_super_user = courierDTO.id_super_user,
                                 username = courierDTO.username ?: "",
-                                firstname = courierDTO.firstname,
-                                lastname = courierDTO.lastname,
+                                first_name = courierDTO.first_name,
+                                last_name = courierDTO.last_name,
                                 phone_number = courierDTO.phone_number,
                                 email = courierDTO.email,
                                 type_user = courierDTO.type_user

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    id("kotlin-kapt")
 }
 
 android {
@@ -73,10 +74,23 @@ dependencies {
     //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson) // Для преобразования JSON с использованием Gson
+    implementation(libs.okhttp)
     //RecyclerView (Отображение списков)
     implementation(libs.androidx.recyclerview)
     //ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    // Room (для локальной базы данных)
+    implementation(libs.androidx.room.runtime)
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation(libs.androidx.room.ktx) // Coroutines поддержка
+    // Navigation Compose
+    implementation(libs.androidx.navigation.compose) // Актуальная версия для Compose
+    // Material Icons Extended (для иконок)
+    implementation(libs.androidx.material.icons.extended) // Совместима с вашим compose-bom
+    // Kotlinx Serialization
+    implementation(libs.kotlinx.serialization.json)
+    // DataStore (Preferences)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

@@ -1,6 +1,10 @@
 package com.example.md_stonetrack.data.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class AuthRequest(
-    val username: String,
-    val password: String
+    @SerialName("username") val username: String,
+    @SerialName("password") val password: String
 )

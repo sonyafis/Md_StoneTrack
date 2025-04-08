@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class StatusDTO(
-    @SerialName("id_status") val id: Int,
-    @SerialName("status_name") val name: String
+data class RefreshTokenRequest(
+    @SerialName("refresh")
+    val refreshToken: String
 )

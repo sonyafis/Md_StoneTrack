@@ -1,11 +1,15 @@
 package com.example.md_stonetrack.data.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class SuperUserDTO(
-    val id_super_user: Int,
-    val username: String,
-    val firstname: String,
-    val lastname: String,
-    val phone_number: String,
-    val email: String,
-    val type_user: String
+    @SerialName("id_super_user") val id_super_user: Int,
+    @SerialName("username") val username: String,
+    @SerialName("first_name") val first_name: String? = null,
+    @SerialName("last_name") val last_name: String? = null,
+    @SerialName("phone_number") val phone_number: String? = null,
+    @SerialName("email") val email: String? = null,
+    @SerialName("type_user") val type_user: String
 )
