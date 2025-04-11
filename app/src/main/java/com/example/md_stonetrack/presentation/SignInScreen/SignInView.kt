@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SignInScreen(navController: NavController, viewModel: AuthViewModel = koinViewModel()) {
+fun SignInView(navController: NavController, viewModel: SignInViewModel = koinViewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -43,16 +43,16 @@ fun SignInScreen(navController: NavController, viewModel: AuthViewModel = koinVi
         }
 
         when (uiState) {
-            is AuthViewModel.AuthUiState.Loading -> {
+            is SignInViewModel.AuthUiState.Loading -> {
                 CircularProgressIndicator()
             }
-            is AuthViewModel.AuthUiState.Error -> {
+            is SignInViewModel.AuthUiState.Error -> {
                 Text(
-                    text = (uiState as AuthViewModel.AuthUiState.Error).message,
+                    text = (uiState as SignInViewModel.AuthUiState.Error).message,
                     color = MaterialTheme.colorScheme.error
                 )
             }
-            is AuthViewModel.AuthUiState.Success -> {
+            is SignInViewModel.AuthUiState.Success -> {
                 LaunchedEffect(Unit) {
                     // Временная проверка по логину
                     if (username.lowercase().contains("courier")) {

@@ -13,9 +13,8 @@ import com.example.md_stonetrack.data.security.CryptoManager
 import com.example.md_stonetrack.domain.repository.AuthRepository
 import com.example.md_stonetrack.domain.repository.OrderRepository
 import com.example.md_stonetrack.domain.usecase.LoginUseCase
-import com.example.md_stonetrack.presentation.SignInScreen.AuthViewModel
+import com.example.md_stonetrack.presentation.SignInScreen.SignInViewModel
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -42,5 +41,5 @@ val dataModule = module {
     factory { LoginUseCase(get()) }
 
     // ViewModels
-    viewModelOf(::AuthViewModel)
+    viewModelOf(::SignInViewModel)
 }

@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun OrdersScreen(token: String, viewModel: OrderViewModel = koinViewModel()) {
+fun OrderView(token: String, viewModel: OrderViewModel = koinViewModel()) {
     viewModel.loadOrders(token)
     val orders = viewModel.orders.value
 
