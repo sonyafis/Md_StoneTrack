@@ -150,7 +150,8 @@ fun StartView(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 40.dp), // Боковые отступы
+                        .padding(horizontal = 40.dp) // Боковые отступы
+                        .padding(bottom = 40.dp), // Боковые отступы
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button(
