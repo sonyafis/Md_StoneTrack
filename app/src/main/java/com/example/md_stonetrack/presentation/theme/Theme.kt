@@ -7,6 +7,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 val AppTypography = Typography(
+    displayLarge = TextStyle(
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 57.sp,
+        lineHeight = 64.sp
+    ),
+    displayMedium = TextStyle(
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 45.sp,
+        lineHeight = 52.sp
+    ),
+    // Добавьте все необходимые стили
     headlineMedium = TextStyle(
         fontFamily = AppFontFamily,
         fontWeight = FontWeight.Bold,
@@ -21,15 +34,16 @@ val AppTypography = Typography(
         fontFamily = AppFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
-    )
+    ),
 )
+
 @Composable
 fun MdStoneTrackTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        typography = AppTypography, // Применяем нашу типографику
+        typography = AppTypography,
         content = content
     )
 }

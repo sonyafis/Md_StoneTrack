@@ -1,5 +1,6 @@
 package com.example.mdstonetrack.presentation.StartScreen.StartView
 
+import AppFontFamily
 import MdStoneTrackTheme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -36,7 +37,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun StartView(
@@ -98,14 +99,18 @@ fun StartView(
                         ) {
                             Text(
                                 text = "MD-STONE",
-                                style = MaterialTheme.typography.headlineLarge, // Увеличенный размер
+                                style = MaterialTheme.typography.headlineLarge,
+                                fontFamily = AppFontFamily,
+                                fontWeight = FontWeight.Bold,// Увеличенный размер
                                 color = Color.White
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "TRACK",
-                            style = MaterialTheme.typography.headlineLarge, // Увеличенный размер
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontFamily = AppFontFamily,
+                            fontWeight = FontWeight.Bold,// Увеличенный размер
                             color = Color.Black
                         )
                     }
@@ -114,8 +119,9 @@ fun StartView(
                     Text(
                         text = "Здравствуйте!",
                         style = MaterialTheme.typography.headlineSmall, // Увеличенный размер
+                        fontFamily = AppFontFamily,
                         color = Color.Black,
-                        modifier = Modifier.padding(bottom = 25.dp), // Увеличенный отступ
+                        modifier = Modifier.padding(bottom = 15.dp), // Увеличенный отступ
                         textAlign = TextAlign.Center
                     )
 
@@ -123,6 +129,7 @@ fun StartView(
                     Text(
                         text = "Удобное отслеживание заказов мебели — всегда под рукой!",
                         style = MaterialTheme.typography.headlineSmall,
+                        fontFamily = AppFontFamily,
                         color = Color.Black,
                         modifier = Modifier.padding(bottom = 49.dp), // Увеличенный отступ
                         textAlign = TextAlign.Center
@@ -158,6 +165,8 @@ fun StartView(
                     Text(
                         text = "Войти",
                         style = MaterialTheme.typography.bodyLarge,
+                        fontFamily = AppFontFamily,
+                        fontWeight = FontWeight.Medium,
                         color = Color.White
                     )
                 }
@@ -176,7 +185,9 @@ fun StartView(
                     ) {
                     Text(
                         text = "Регистрация",
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontFamily = AppFontFamily,
+                        fontWeight = FontWeight.Medium,
                     )
                 }
                 }
