@@ -1,5 +1,6 @@
 package com.example.md_stonetrack.domain.repository
 
+import com.example.md_stonetrack.data.db.entities.UserEntity
 import com.example.md_stonetrack.domain.model.AuthResult
 import com.example.md_stonetrack.domain.model.AuthTokens
 
@@ -8,5 +9,7 @@ interface AuthRepository {
     suspend fun logout()
     suspend fun isUserAuthenticated(): Boolean
     suspend fun getAccessToken(): String?
+    suspend fun getRefreshToken(): String?
     suspend fun refreshTokens(refreshToken: String): Result<AuthTokens>
+    suspend fun validateAccessToken(token: String): Boolean
 }
