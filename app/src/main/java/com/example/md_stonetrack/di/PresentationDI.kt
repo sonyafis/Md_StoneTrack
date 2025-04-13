@@ -4,6 +4,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.md_stonetrack.data.repository.RegistrationRepositoryImpl
 import com.example.md_stonetrack.domain.repository.RegistrationRepository
 import com.example.md_stonetrack.domain.usecase.CheckAuthUseCase
+import com.example.md_stonetrack.domain.usecase.GetCurrentUserUseCase
+import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
 import com.example.md_stonetrack.domain.usecase.LoginUseCase
 import com.example.md_stonetrack.presentation.OrdersScreen.OrderViewModel
 import com.example.md_stonetrack.presentation.RegisterScreen.RegistrationViewModel
@@ -30,4 +32,7 @@ val presentationModule = module {
 
     // UseCase
     factory { LoginUseCase(get()) }
+    // UseCases для OrderViewModel
+    factory { GetOrdersUseCase(orderRepository = get(), authRepository = get()) }
+    factory { GetCurrentUserUseCase(get()) }
 }

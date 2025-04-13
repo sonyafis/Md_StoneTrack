@@ -134,7 +134,8 @@ fun RegistrationView(
                                 text = "MD-STONE",
                                 fontFamily = AppFontFamily,
                                 fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.headlineLarge,
+                                fontSize = 30.sp,
+//                                style = MaterialTheme.typography.headlineLarge,
                                 color = Color.White
                             )
                         }
@@ -143,7 +144,8 @@ fun RegistrationView(
                             text = "TRACK",
                             fontFamily = AppFontFamily,
                             fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.headlineLarge,
+                            fontSize = 30.sp,
+//                            style = MaterialTheme.typography.headlineLarge,
                             color = Color.Black
                         )
                     }
@@ -166,33 +168,6 @@ fun RegistrationView(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         RegistrationTextField(
-                            value = username,
-                            onValueChange = { username = it },
-                            label = "Логин"
-                        )
-
-                        RegistrationTextField(
-                            value = email,
-                            onValueChange = { email = it },
-                            label = "Email",
-                            keyboardType = KeyboardType.Email
-                        )
-
-                        RegistrationTextField(
-                            value = password,
-                            onValueChange = { password = it },
-                            label = "Пароль",
-                            isPassword = true
-                        )
-
-                        RegistrationTextField(
-                            value = confirmPassword,
-                            onValueChange = { confirmPassword = it },
-                            label = "Подтверждение пароля",
-                            isPassword = true
-                        )
-
-                        RegistrationTextField(
                             value = first_name,
                             onValueChange = { first_name = it },
                             label = "Имя"
@@ -209,6 +184,33 @@ fun RegistrationView(
                             onValueChange = { phone_number = it },
                             label = "Номер телефона",
                             keyboardType = KeyboardType.Phone
+                        )
+
+                        RegistrationTextField(
+                            value = email,
+                            onValueChange = { email = it },
+                            label = "Email",
+                            keyboardType = KeyboardType.Email
+                        )
+
+                        RegistrationTextField(
+                            value = username,
+                            onValueChange = { username = it },
+                            label = "Логин"
+                        )
+
+                        RegistrationTextField(
+                            value = password,
+                            onValueChange = { password = it },
+                            label = "Пароль",
+                            isPassword = true
+                        )
+
+                        RegistrationTextField(
+                            value = confirmPassword,
+                            onValueChange = { confirmPassword = it },
+                            label = "Подтверждение пароля",
+                            isPassword = true
                         )
                     }
 
