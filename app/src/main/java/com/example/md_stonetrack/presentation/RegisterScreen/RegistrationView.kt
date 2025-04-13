@@ -272,7 +272,11 @@ fun RegistrationView(
                             color = colorResource(id = R.color.darkpurple),
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.clickable {
-                                navController.popBackStack()
+                                navController.navigate("signin") {
+                                    // Опциональные параметры навигации
+                                    popUpTo("registration_screen") { inclusive = true } // Закрыть текущий экран
+                                    launchSingleTop = true // Не создавать дубликаты экрана
+                                }
                             }
                         )
                     }
