@@ -96,7 +96,8 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                         ) {
                             Text(
                                 text = "MD-STONE",
-                                style = MaterialTheme.typography.headlineLarge,
+//                                style = MaterialTheme.typography.headlineLarge,
+                                fontSize = 30.sp,
                                 fontFamily = AppFontFamily,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -107,7 +108,8 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                             text = "TRACK",
                             fontFamily = AppFontFamily,
                             fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.headlineLarge,
+                            fontSize = 30.sp,
+//                            style = MaterialTheme.typography.headlineLarge,
                             color = Color.Black
                         )
                     }

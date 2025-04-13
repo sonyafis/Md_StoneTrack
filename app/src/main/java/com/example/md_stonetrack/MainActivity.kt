@@ -81,9 +81,7 @@ fun NavGraphBuilder.ordersGraph(navController: NavHostController) {
         route = "orders_graph"
     ) {
         composable("orders_screen") {
-            OrderView(
-                viewModel = koinViewModel()
-            )
+            OrderView(navController)
         }
         // Другие экраны графа заказов
     }

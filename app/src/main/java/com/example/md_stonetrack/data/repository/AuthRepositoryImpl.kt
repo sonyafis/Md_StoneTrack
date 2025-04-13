@@ -143,6 +143,11 @@ class AuthRepositoryImpl(
         }
     }
 
+    override suspend fun getCurrentUser(): UserEntity? {
+        return userDao.getUserById(1)
+    }
+
+
 
     companion object {
         val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")

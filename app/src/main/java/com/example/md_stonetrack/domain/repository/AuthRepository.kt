@@ -7,6 +7,7 @@ import com.example.md_stonetrack.domain.model.AuthTokens
 interface AuthRepository {
     suspend fun login(username: String, password: String): AuthResult
     suspend fun logout()
+    suspend fun getCurrentUser(): UserEntity?
     suspend fun isUserAuthenticated(): Boolean
     suspend fun getAccessToken(): String?
     suspend fun getRefreshToken(): String?

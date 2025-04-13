@@ -36,6 +36,7 @@ import com.example.md_stonetrack.presentation.StartScreen.StartViewModel
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun StartView(
@@ -94,7 +95,8 @@ fun StartView(
                         ) {
                             Text(
                                 text = "MD-STONE",
-                                style = MaterialTheme.typography.headlineLarge,
+//                                style = MaterialTheme.typography.headlineLarge,
+                                fontSize = 30.sp,
                                 fontFamily = AppFontFamily,
                                 fontWeight = FontWeight.Bold,// Увеличенный размер
                                 color = Color.White
@@ -103,7 +105,8 @@ fun StartView(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "TRACK",
-                            style = MaterialTheme.typography.headlineLarge,
+//                            style = MaterialTheme.typography.headlineLarge,
+                            fontSize = 30.sp,
                             fontFamily = AppFontFamily,
                             fontWeight = FontWeight.Bold,// Увеличенный размер
                             color = Color.Black

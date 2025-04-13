@@ -1,50 +1,47 @@
 package com.example.md_stonetrack.presentation.OrdersScreen
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.md_stonetrack.domain.model.Order
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.State
+import com.example.md_stonetrack.domain.usecase.GetCurrentUserUseCase
 import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
-import java.io.IOException
-import android.util.Log
-import com.example.md_stonetrack.domain.repository.AuthRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class OrderViewModel(
     private val getOrdersUseCase: GetOrdersUseCase,
-    private val authRepository: AuthRepository
+    private val getCurrentUserUseCase: GetCurrentUserUseCase
 ) : ViewModel() {
 
-    private val _orders = mutableStateOf<List<Order>>(emptyList())
-    private val _error = mutableStateOf<String?>(null)
-    private val _isLoading = mutableStateOf(false)
+    private val _state = MutableStateFlow<OrderState>(OrderState.Loading)
+    val state: StateFlow<OrderState> = _state
 
-    val orders: State<List<Order>> = _orders
-    val error: State<String?> = _error
-    val isLoading: State<Boolean> = _isLoading
+    var userName by mutableStateOf("")
+        private set
 
-    fun loadOrders() {
+    init {
+        loadUserName()
+        loadOrders()
+    }
+
+    private fun loadUserName() {
         viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                _error.value = null
+            val user = getCurrentUserUseCase()
+            userName = user?.first_name ?: user?.name ?: "Пользователь"
+        }
+    }
 
-                val token = authRepository.getAccessToken()
-                if (token.isNullOrEmpty()) {
-                    _error.value = "Токен не найден"
-                    return@launch
-                }
-
-                _orders.value = getOrdersUseCase(token)
-            } catch (e: Exception) {
-                _error.value = when (e) {
-                    is IOException -> "Сетевая ошибка: ${e.message}"
-                    else -> "Ошибка: ${e.localizedMessage}"
-                }
-                Log.e("API", "Ошибка загрузки", e)
-            } finally {
-                _isLoading.value = false
+    private fun loadOrders() {
+        viewModelScope.launch {
+            _state.value = OrderState.Loading
+            val result = getOrdersUseCase()
+            _state.value = if (result.isEmpty()) {
+                OrderState.Empty
+            } else {
+                OrderState.Success(result)
             }
         }
     }
