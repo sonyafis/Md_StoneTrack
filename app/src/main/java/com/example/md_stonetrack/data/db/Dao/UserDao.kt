@@ -9,6 +9,9 @@ import androidx.room.Update
 import com.example.md_stonetrack.data.db.entities.UserEntity
 @Dao
 interface UserDao {
+    @Query("SELECT * FROM user_table WHERE id = :id LIMIT 1")
+    suspend fun getUserById(id: Int): UserEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertUser(user: UserEntity)
 

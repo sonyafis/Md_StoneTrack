@@ -9,10 +9,13 @@ import androidx.compose.runtime.State
 import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
 import java.io.IOException
 import android.util.Log
+import com.example.md_stonetrack.domain.repository.AuthRepository
 
 class OrderViewModel(
-    private val getOrdersUseCase: GetOrdersUseCase // Добавляем зависимость через конструктор
+    private val getOrdersUseCase: GetOrdersUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
+
     private val _orders = mutableStateOf<List<Order>>(emptyList())
     private val _error = mutableStateOf<String?>(null)
     private val _isLoading = mutableStateOf(false)
@@ -21,12 +24,19 @@ class OrderViewModel(
     val error: State<String?> = _error
     val isLoading: State<Boolean> = _isLoading
 
-    fun loadOrders(token: String) {
+    fun loadOrders() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 _error.value = null
-                _orders.value = getOrdersUseCase(token) // Правильное использование use case
+
+                val token = authRepository.getAccessToken()
+                if (token.isNullOrEmpty()) {
+                    _error.value = "Токен не найден"
+                    return@launch
+                }
+
+                _orders.value = getOrdersUseCase(token)
             } catch (e: Exception) {
                 _error.value = when (e) {
                     is IOException -> "Сетевая ошибка: ${e.message}"
