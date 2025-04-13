@@ -1,9 +1,8 @@
-package com.example.md_stonetrack.presentation
+package com.example.md_stonetrack.presentation.SplashScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.md_stonetrack.domain.usecase.CheckAuthUseCase
-import com.example.md_stonetrack.data.db.Dao.UserDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

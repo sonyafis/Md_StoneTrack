@@ -1,6 +1,5 @@
-package com.example.md_stonetrack.presentation
+package com.example.md_stonetrack.presentation.SplashScreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -9,13 +8,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.getValue
 
 @Composable
-fun SplashScreen(
+fun SplashView(
     navController: NavHostController,
     viewModel: SplashViewModel = koinViewModel()
 ) {

@@ -5,11 +5,14 @@ import com.example.md_stonetrack.data.model.AuthResponse
 import com.example.md_stonetrack.data.model.OrderDTO
 import com.example.md_stonetrack.data.model.RefreshTokenRequest
 import com.example.md_stonetrack.data.model.SuperUserDTO
+import com.example.md_stonetrack.domain.model.RegistrationRequest
+import com.example.md_stonetrack.domain.model.RegistrationResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
     @POST("auth/jwt/create/")
@@ -23,4 +26,13 @@ interface ApiService {
 
     @GET("api/orders/")
     suspend fun getOrders(@Header("Authorization") token: String): List<OrderDTO>
+
+    @POST("auth/users/")
+    suspend fun registerUser(@Body request: RegistrationRequest): Response<RegistrationResponse>
+
+    @GET("auth/users/check_username/")
+    suspend fun checkUsernameExists(@Query("username") username: String): Response<Boolean>
+
+    @GET("auth/users/check_email/")
+    suspend fun checkEmailExists(@Query("email") email: String): Response<Boolean>
 }
