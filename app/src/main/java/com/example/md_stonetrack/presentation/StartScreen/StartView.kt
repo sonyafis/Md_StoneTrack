@@ -35,8 +35,6 @@ import com.example.md_stonetrack.R
 import com.example.md_stonetrack.presentation.StartScreen.StartViewModel
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 
 @Composable
@@ -63,16 +61,13 @@ fun StartView(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.9f)
+                    .fillMaxHeight(0.92f)
+                    .padding(bottom = 25.dp)
                     .align(Alignment.BottomCenter)
                     .background(
                         color = Color.White,
-                        shape = RoundedCornerShape(
-                            topStart = 32.dp,
-                            topEnd = 32.dp
-                        )
-                    )
-                    .padding(24.dp),
+                        shape = RoundedCornerShape(32.dp)
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Верхняя часть с увеличенными текстами
@@ -161,16 +156,16 @@ fun StartView(
                             .height(48.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = colorResource(id = R.color.darkpurple)
-                    )
+                        )
                     ) {
-                    Text(
-                        text = "Войти",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontFamily = AppFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White
-                    )
-                }
+                        Text(
+                            text = "Войти",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontFamily = AppFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.White
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -182,15 +177,15 @@ fun StartView(
                         border = BorderStroke(1.dp, colorResource(id = R.color.darkpurple)),
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = colorResource(id = R.color.darkpurple)
-                    )
+                        )
                     ) {
-                    Text(
-                        text = "Регистрация",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontFamily = AppFontFamily,
-                        fontWeight = FontWeight.Medium,
-                    )
-                }
+                        Text(
+                            text = "Регистрация",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontFamily = AppFontFamily,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    }
                 }
             }
         }
