@@ -26,6 +26,45 @@ class AuthRepositoryImpl(
     private val dataStore = context.dataStore
     private val cryptoManager = CryptoManager()
 
+    override suspend fun refreshTokens(refreshToken: String): Result<AuthTokens> {
+        return try {
+            val refreshToken = getRefreshToken() ?: return Result.failure(Exception("No refresh token available"))
+
+            // Отправляем только refresh token для обновления
+            val response = apiService.refreshToken(RefreshTokenRequest(refreshToken))
+
+            when {
+                response.isSuccessful -> {
+                    response.body()?.let { authResponse ->
+                        if (authResponse.access != null && authResponse.refresh != null) {
+                            // Сохраняем новые токены
+                            saveTokens(authResponse.access, authResponse.refresh)
+                            Result.success(
+                                AuthTokens(
+                                    accessToken = authResponse.access,
+                                    refreshToken = authResponse.refresh,
+                                    userType = userDao.getUserById(1)?.type_user
+                                )
+                            )
+                        } else {
+                            Result.failure(Exception("Tokens missing in response"))
+                        }
+                    } ?: Result.failure(Exception("Empty response body"))
+                }
+                response.code() == 401 -> {
+                    // Токен в черном списке - разлогиниваем
+                    logout()
+                    Result.failure(Exception("Refresh token blacklisted"))
+                }
+                else -> {
+                    Result.failure(Exception("Refresh failed: ${response.errorBody()?.string()}"))
+                }
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun login(username: String, password: String): AuthResult {
         return try {
             val response = apiService.login(AuthRequest(username, password))
@@ -114,40 +153,9 @@ class AuthRepositoryImpl(
         return encryptedToken?.let { cryptoManager.decrypt(it) }
     }
 
-    override suspend fun refreshTokens(refreshToken: String): Result<AuthTokens> {
-        return try {
-            val response = apiService.refreshToken(RefreshTokenRequest(refreshToken))
-            if (response.isSuccessful) {
-                val authResponse = response.body()
-                if (authResponse?.access != null && authResponse.refresh != null) {
-                    saveTokens(authResponse.access, authResponse.refresh)
-
-                    // пробуем получить роль из Room
-                    val cachedUser = userDao.getUserById(1)
-
-                    Result.success(
-                        AuthTokens(
-                            authResponse.access,
-                            authResponse.refresh,
-                            userType = cachedUser?.type_user // здесь если есть
-                        )
-                    )
-                } else {
-                    Result.failure(Exception("Token refresh failed"))
-                }
-            } else {
-                Result.failure(Exception("Refresh failed: ${response.errorBody()?.string()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
     override suspend fun getCurrentUser(): UserEntity? {
         return userDao.getUserById(1)
     }
-
-
 
     companion object {
         val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")

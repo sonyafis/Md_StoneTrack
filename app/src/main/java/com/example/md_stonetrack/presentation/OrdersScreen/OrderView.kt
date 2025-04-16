@@ -42,7 +42,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.md_stonetrack.presentation.utils.DateFormatter
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -62,7 +61,7 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
             // Пользователь отказал
         }
     }
-
+    var showSessionExpiredDialog by remember { mutableStateOf(false) }
     var showPermissionExplanation by remember { mutableStateOf(false) }
 
     if (showPermissionExplanation) {
@@ -71,6 +70,50 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
             onConfirm = {
                 showPermissionExplanation = false
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        )
+    }
+
+    // Диалог истекшей сессии
+    if (state is OrderState.SessionExpired) {
+        AlertDialog(
+            onDismissRequest = { /* Не даем закрыть - обязателен вход */ },
+            title = { Text("Сессия истекла") },
+            text = { Text("Ваша сессия была завершена. Пожалуйста, войдите снова.") },
+            confirmButton = {
+                Button(onClick = {
+                    navController.navigate("sigin") {
+                        popUpTo("orders") { inclusive = true }
+                    }
+                }) {
+                    Text("Войти")
+                }
+            }
+        )
+    }
+
+    // Отслеживаем состояние истекшей сессии
+    LaunchedEffect(state) {
+        if (state is OrderState.SessionExpired) {
+            showSessionExpiredDialog = true
+        }
+    }
+
+    // Диалог истекшей сессии
+    if (showSessionExpiredDialog) {
+        AlertDialog(
+            onDismissRequest = { showSessionExpiredDialog = false },
+            title = { Text("Сессия истекла") },
+            text = { Text("Для продолжения работы войдите снова") },
+            confirmButton = {
+                Button(onClick = {
+                    showSessionExpiredDialog = false
+                    navController.navigate("auth_screen") {
+                        popUpTo("orders_screen") { inclusive = true }
+                    }
+                }) {
+                    Text("Войти")
+                }
             }
         )
     }
@@ -179,7 +222,6 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
 
                         is OrderState.Success -> {
                             val orders = (state as OrderState.Success).orders
-                            val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
                             Box(modifier = Modifier.fillMaxSize()) {
                                 SwipeRefresh(
                                     state = rememberSwipeRefreshState(isRefreshing),
@@ -200,33 +242,22 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
                                     }
                                 }
                             }
-                            // Анимация вращения иконки обновления
-                            if (isRefreshing) {
-                                val rotation by animateFloatAsState(
-                                    targetValue = if (isRefreshing) 360f else 0f,
-                                    animationSpec = infiniteRepeatable(
-                                        animation = tween(durationMillis = 1000),
-                                        repeatMode = RepeatMode.Restart
-                                    ), label = "rotateAnim"
-                                )
-
-                                Icon(
-                                    imageVector = Icons.Default.Refresh, // можно иконку из material.icons
-                                    contentDescription = "Обновление",
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .align(Alignment.CenterHorizontally)
-                                        .padding(top = 12.dp)
-                                        .rotate(rotation),
-                                    tint = colorResource(id = R.color.purple)
-                                )
-                            }
                         }
 
                         is OrderState.Error -> {
-                            Box(modifier = Modifier .verticalScroll(rememberScrollState()) .fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState()),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 Text("Ошибка: ${(state as OrderState.Error).message}")
                             }
+                        }
+
+                        is OrderState.SessionExpired -> {
+                            // Пустой контейнер, так как диалог уже показан
+                            Box(Modifier.fillMaxSize())
                         }
                     }
                 }

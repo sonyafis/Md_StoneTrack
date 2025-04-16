@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.md_stonetrack.domain.model.Order
 import com.example.md_stonetrack.domain.usecase.GetCurrentUserUseCase
 import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
+import com.example.md_stonetrack.domain.usecase.SessionExpiredException
 import com.example.md_stonetrack.presentation.utils.NotificationHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +29,7 @@ class OrderViewModel(
         private set
 
     private var lastOrders: List<Order> = emptyList()
+    private var isPollingActive by mutableStateOf(true)
 
     private fun checkForStatusChanges(newOrders: List<Order>) {
         if (lastOrders.isEmpty()) return
@@ -45,6 +47,7 @@ class OrderViewModel(
 
     var isRefreshing by mutableStateOf(false)
         private set
+
     fun refreshOrders() {
         viewModelScope.launch {
             isRefreshing = true
@@ -67,22 +70,45 @@ class OrderViewModel(
 
     private fun startPollingOrders() {
         viewModelScope.launch {
-            while (true) {
-                loadOrders()
+            while (isPollingActive) {
+                try {
+                    loadOrders()
+                } catch (e: Exception) {
+                    if (e.message?.contains("Session expired") == true) {
+                        _state.value = OrderState.SessionExpired
+                        isPollingActive = false
+                        break
+                    }
+                }
                 delay(10000L) // каждые 10 секунд
             }
         }
     }
 
     private suspend fun loadOrders() {
-        val result = getOrdersUseCase()
-        if (result.isEmpty()) {
-            _state.value = OrderState.Empty
-            lastOrders = emptyList()
-        } else {
-            checkForStatusChanges(result)
-            _state.value = OrderState.Success(result)
-            lastOrders = result
+        try {
+            val result = getOrdersUseCase()
+            if (result.isEmpty()) {
+                _state.value = OrderState.Empty
+            } else {
+                checkForStatusChanges(result)
+                _state.value = OrderState.Success(result)
+            }
+        } catch (e: SessionExpiredException) {
+            _state.value = OrderState.SessionExpired
+            // Можно добавить автоматический logout здесь
+//            authRepository.logout()
+        } catch (e: Exception) {
+            _state.value = OrderState.Error(
+                when {
+                    e.message?.contains("blacklisted") == true -> "Сессия истекла. Требуется повторный вход."
+                    else -> e.message ?: "Неизвестная ошибка"
+                }
+            )
         }
+    }
+
+    fun stopPolling() {
+        isPollingActive = false
     }
 }

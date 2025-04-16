@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson) // Для преобразования JSON с использованием Gson
     implementation(libs.okhttp)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
     //RecyclerView (Отображение списков)
     implementation(libs.androidx.recyclerview)
     //ViewModel

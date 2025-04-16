@@ -7,7 +7,10 @@ import com.example.md_stonetrack.domain.usecase.CheckAuthUseCase
 import com.example.md_stonetrack.domain.usecase.GetCurrentUserUseCase
 import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
 import com.example.md_stonetrack.domain.usecase.LoginUseCase
+import com.example.md_stonetrack.presentation.OrderDetailScreen.OrderDetailView
+import com.example.md_stonetrack.presentation.OrderDetailScreen.OrderDetailViewModel
 import com.example.md_stonetrack.presentation.OrdersScreen.OrderViewModel
+import com.example.md_stonetrack.presentation.ProfileScreen.ProfileViewModel
 import com.example.md_stonetrack.presentation.RegisterScreen.RegistrationViewModel
 import com.example.md_stonetrack.presentation.SignInScreen.SignInViewModel
 import com.example.md_stonetrack.presentation.SplashScreen.SplashViewModel
@@ -19,6 +22,8 @@ import org.koin.dsl.module
 
 val presentationModule = module {
     viewModel { OrderViewModel(get(), get(), get()) }
+    viewModel { OrderDetailViewModel(get()) }
+    viewModel { ProfileViewModel(get()) }
     // Регистрируем ViewModel через viewModel()
     viewModel { SignInViewModel(get()) }
     viewModel { SplashViewModel(get()) }

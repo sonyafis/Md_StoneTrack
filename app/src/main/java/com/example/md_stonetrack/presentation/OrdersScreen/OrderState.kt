@@ -7,4 +7,5 @@ sealed class OrderState {
     object Empty : OrderState()
     data class Success(val orders: List<Order>) : OrderState()
     data class Error(val message: String) : OrderState()
+    object SessionExpired : OrderState()
 }
