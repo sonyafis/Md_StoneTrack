@@ -11,12 +11,14 @@ import com.example.md_stonetrack.presentation.OrdersScreen.OrderViewModel
 import com.example.md_stonetrack.presentation.RegisterScreen.RegistrationViewModel
 import com.example.md_stonetrack.presentation.SignInScreen.SignInViewModel
 import com.example.md_stonetrack.presentation.SplashScreen.SplashViewModel
+import com.example.md_stonetrack.presentation.utils.NotificationHelper
 import kotlinx.coroutines.launch
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val presentationModule = module {
-    viewModel { OrderViewModel(get(), get()) }
+    viewModel { OrderViewModel(get(), get(), get()) }
     // Регистрируем ViewModel через viewModel()
     viewModel { SignInViewModel(get()) }
     viewModel { SplashViewModel(get()) }
@@ -35,4 +37,5 @@ val presentationModule = module {
     // UseCases для OrderViewModel
     factory { GetOrdersUseCase(orderRepository = get(), authRepository = get()) }
     factory { GetCurrentUserUseCase(get()) }
+    single { NotificationHelper(androidContext()) }
 }

@@ -14,7 +14,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import com.example.md_stonetrack.R
 
-data class BottomNavItem(val route: String, val icon: ImageVector? = null, val iconResId: Int? = null )
+data class BottomNavItem(val route: String, val icon: ImageVector? = null, val iconResId: Int? = null)
 
 @Composable
 fun BottomNavigationBar(navController: NavController, selected: String) {
