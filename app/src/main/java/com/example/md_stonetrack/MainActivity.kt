@@ -12,7 +12,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.example.md_stonetrack.presentation.OrderDetailScreen.OrderDetailView
 import com.example.md_stonetrack.presentation.OrdersScreen.OrderView
+import com.example.md_stonetrack.presentation.ProfileScreen.ProfileView
+import com.example.md_stonetrack.presentation.ProfileScreen.ProfileViewModel
 import com.example.md_stonetrack.presentation.RegisterScreen.RegistrationView
 import com.example.md_stonetrack.presentation.SignInScreen.SignInView
 import com.example.md_stonetrack.presentation.SplashScreen.SplashView
@@ -83,7 +86,22 @@ fun NavGraphBuilder.ordersGraph(navController: NavHostController) {
         composable("orders_screen") {
             OrderView(navController)
         }
-        // Другие экраны графа заказов
+        composable("order_detail/{id_order}") { backStackEntry ->
+            val id_order = backStackEntry.arguments?.getString("id_order")?.toIntOrNull()
+            OrderDetailView(id_order = id_order, navController = navController)
+        }
+        // Новый экран профиля
+        composable("profile_screen") {
+            val viewModel: ProfileViewModel = koinViewModel()
+            ProfileView(
+                viewModel = viewModel,
+                onLogoutSuccess = {
+                    navController.navigate("auth_graph") {
+                        popUpTo("orders_graph") { inclusive = true }
+                    }
+                }
+            )
+        }
     }
 }
 

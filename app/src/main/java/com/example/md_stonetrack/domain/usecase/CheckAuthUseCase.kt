@@ -15,20 +15,20 @@ class CheckAuthUseCase(
 
     suspend operator fun invoke(): AuthResult {
         return try {
-            val accessToken = authRepository.getAccessToken()
-            val refreshToken = authRepository.getRefreshToken()
+            val access = authRepository.getAccessToken()
+            val refresh = authRepository.getRefreshToken()
 
-            if (!accessToken.isNullOrEmpty()) {
+            if (!access.isNullOrEmpty()) {
                 val isAccessValid = runCatching {
-                    authRepository.validateAccessToken(accessToken)
+                    authRepository.validateAccessToken(access)
                 }.getOrElse { false }
 
                 if (isAccessValid) {
                     return getUserRole()
                 }
 
-                if (!refreshToken.isNullOrEmpty()) {
-                    val refreshResult = authRepository.refreshTokens(refreshToken)
+                if (!refresh.isNullOrEmpty()) {
+                    val refreshResult = authRepository.refreshTokens(refresh)
                     if (refreshResult.isSuccess) {
                         return getUserRole()
                     }

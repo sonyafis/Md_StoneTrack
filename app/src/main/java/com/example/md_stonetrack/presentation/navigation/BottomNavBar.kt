@@ -21,7 +21,7 @@ fun BottomNavigationBar(navController: NavController, selected: String) {
     val items = listOf(
         BottomNavItem("orders_screen", iconResId = R.drawable.home),
         BottomNavItem("history_screen", iconResId = R.drawable.history),
-        BottomNavItem("about_screen", iconResId = R.drawable.about_us),
+//        BottomNavItem("about_screen", iconResId = R.drawable.about_us),
         BottomNavItem("feedback_screen", iconResId = R.drawable.feedback),
         BottomNavItem("profile_screen", iconResId = R.drawable.profile),
     )
