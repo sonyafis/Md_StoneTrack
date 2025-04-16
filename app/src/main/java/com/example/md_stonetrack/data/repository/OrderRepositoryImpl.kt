@@ -19,8 +19,8 @@ class OrderRepositoryImpl(private val api: ApiService) : OrderRepository {
                         address = orderDTO.address ?: "",
                         description = orderDTO.description,
                         id_status = Status(
-                            id_status = orderDTO.id_status.id,
-                            status_name = orderDTO.id_status.name ?: "Unknown"
+                            id_status = orderDTO.id_status.id_status,
+                            status_name = orderDTO.id_status.status_name
                         ),
                         id_client = SuperUser(
                             id_super_user = orderDTO.id_client.id_super_user,
@@ -50,6 +50,7 @@ class OrderRepositoryImpl(private val api: ApiService) : OrderRepository {
                 }
             }
         } catch (e: Exception) {
+            println("Error fetching orders: ${e.message}") // Логирование ошибок
             emptyList() // Возвращаем пустой список при ошибке сети
         }
     }

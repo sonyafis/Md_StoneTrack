@@ -5,15 +5,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.md_stonetrack.domain.model.Order
 import com.example.md_stonetrack.domain.usecase.GetCurrentUserUseCase
 import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
+import com.example.md_stonetrack.presentation.utils.NotificationHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+import kotlinx.coroutines.delay
+import kotlin.collections.filter
+import kotlin.collections.find
+
 class OrderViewModel(
     private val getOrdersUseCase: GetOrdersUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val notificationHelper: NotificationHelper
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<OrderState>(OrderState.Loading)
@@ -22,9 +29,35 @@ class OrderViewModel(
     var userName by mutableStateOf("")
         private set
 
+    private var lastOrders: List<Order> = emptyList()
+
+    private fun checkForStatusChanges(newOrders: List<Order>) {
+        if (lastOrders.isEmpty()) return
+
+        newOrders.forEach { newOrder ->
+            lastOrders.find { it.id_order == newOrder.id_order }?.let { oldOrder ->
+                if (oldOrder.id_status.status_name != newOrder.id_status.status_name) {
+                    viewModelScope.launch {
+                        notificationHelper.showStatusChangeNotification(newOrder.order_number)
+                    }
+                }
+            }
+        }
+    }
+
+    var isRefreshing by mutableStateOf(false)
+        private set
+    fun refreshOrders() {
+        viewModelScope.launch {
+            isRefreshing = true
+            loadOrders()
+            isRefreshing = false
+        }
+    }
+
     init {
         loadUserName()
-        loadOrders()
+        startPollingOrders()
     }
 
     private fun loadUserName() {
@@ -34,15 +67,24 @@ class OrderViewModel(
         }
     }
 
-    private fun loadOrders() {
+    private fun startPollingOrders() {
         viewModelScope.launch {
-            _state.value = OrderState.Loading
-            val result = getOrdersUseCase()
-            _state.value = if (result.isEmpty()) {
-                OrderState.Empty
-            } else {
-                OrderState.Success(result)
+            while (true) {
+                loadOrders()
+                delay(10000L) // каждые 10 секунд
             }
+        }
+    }
+
+    private suspend fun loadOrders() {
+        val result = getOrdersUseCase()
+        if (result.isEmpty()) {
+            _state.value = OrderState.Empty
+            lastOrders = emptyList()
+        } else {
+            checkForStatusChanges(result)
+            _state.value = OrderState.Success(result)
+            lastOrders = result
         }
     }
 }

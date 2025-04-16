@@ -2,7 +2,7 @@ package com.example.md_stonetrack.domain.model
 
 data class Order(
 val id_order: Int,
-val order_number: Int,
+val order_number: String,
 val address: String,
 val description: String?,
 val id_status: Status,
