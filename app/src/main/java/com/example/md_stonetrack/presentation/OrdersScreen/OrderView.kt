@@ -1,6 +1,12 @@
 package com.example.md_stonetrack.presentation.OrdersScreen
 
 import AppFontFamily
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
@@ -31,9 +37,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.md_stonetrack.presentation.utils.DateFormatter
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -43,6 +52,42 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
     val state by viewModel.state.collectAsState()
     val userName = viewModel.userName
     val isRefreshing = viewModel.isRefreshing
+    val context = LocalContext.current
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // Разрешение получено
+        } else {
+            // Пользователь отказал
+        }
+    }
+
+    var showPermissionExplanation by remember { mutableStateOf(false) }
+
+    if (showPermissionExplanation) {
+        PermissionExplanationDialog(
+            onDismiss = { showPermissionExplanation = false },
+            onConfirm = {
+                showPermissionExplanation = false
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        )
+    }
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val shouldShowExplanation = ActivityCompat.shouldShowRequestPermissionRationale(
+                context as Activity,
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+            if (shouldShowExplanation) {
+                showPermissionExplanation = true
+            } else {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -291,5 +336,27 @@ fun OrderCard(order: Order, onClick: () -> Unit) {
             }
         }
     }
+}
+
+@Composable
+fun PermissionExplanationDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Разрешение уведомлений") },
+        text = { Text("Мы уведомим вас об изменении статуса заказов") },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text("Продолжить")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Отмена")
+            }
+        }
+    )
 }
 
