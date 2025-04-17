@@ -1,6 +1,7 @@
 package com.example.md_stonetrack.presentation.OrderDetailScreen
 
 import AppFontFamily
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,6 +44,7 @@ import com.example.md_stonetrack.presentation.utils.DateFormatter
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
+import com.example.md_stonetrack.presentation.navigation.BottomNavigationBar
 
 @Composable
 fun OrderDetailView(
@@ -165,101 +167,110 @@ fun OrderDetailView(
                                 }
                             }
 
-                            // Адрес
-                            Text(
-                                text = "Адрес:",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.darkpurple),
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            Text(
-                                text = order?.address ?: "Нет данных",
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-
-                            // Дата создания
-                            Text(
-                                text = "Создан:",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.darkpurple),
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            Text(
-                                text = DateFormatter.formatDateTime(order?.created_at ?: "Нет данных"),
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-
-                            // Статус
-                            Text(
-                                text = "Статус:",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.darkpurple),
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            Box(
+                            Surface(
+                                shape = RoundedCornerShape(16.dp),
+                                border = BorderStroke(2.dp, colorResource(id = R.color.purple)),
+                                color = Color.White,
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(30.dp))
-                                    .background(colorResource(id = R.color.darkpurple))
-                                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                                    .fillMaxWidth()
+                                    .padding(top = 20.dp)
+                                    .align(Alignment.CenterHorizontally) // Центрируем рамку
                             ) {
-                                Text(
-                                    text = order?.id_status?.status_name ?: "Нет данных",
-                                    fontSize = 16.sp,
-                                    color = Color.White,
-                                    modifier = Modifier.padding(bottom = 16.dp)
-                                )
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(20.dp), // Добавим отступы между блоками
+                                    modifier = Modifier
+                                        .padding(20.dp) // Увеличим внутренние отступы
+                                ) {
+                                    // Адрес
+                                    Text(
+                                        text = "Адрес: ${order?.address ?: "Нет данных"}",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black
+                                    )
+
+                                    // Дата создания
+                                    Text(
+                                        text = "Создан: ${DateFormatter.formatDateTime(order?.created_at ?: "Нет данных")}",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black
+                                    )
+
+                                    // Статус
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "Статус: ",
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            fontFamily = AppFontFamily
+                                        )
+
+                                        Spacer(modifier = Modifier.width(4.dp))
+
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(30.dp))
+                                                .background(colorResource(id = R.color.darkpurple))
+                                                .padding(horizontal = 12.dp, vertical = 4.dp)
+                                        ) {
+                                            Text(
+                                                text = order?.id_status?.status_name ?: "Нет данных",
+                                                fontSize = 16.sp,
+                                                fontFamily = AppFontFamily,
+                                                fontWeight = FontWeight.Medium,
+                                                color = Color.White
+                                            )
+                                        }
+                                    }
+
+                                    // Курьер
+                                    Text(
+                                        text = "Курьер: ${order?.id_courier?.let { "${it.first_name} ${it.last_name}" } ?: "Не назначен"}",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black
+                                    )
+
+                                    // Телефон курьера
+                                    Text(
+                                        text = "Телефон: ${order?.id_courier?.phone_number ?: "Нет данных"}",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black
+                                    )
+
+                                    // Описание
+                                    Text(
+                                        text = "Описание:",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black,
+                                    )
+                                    Text(
+                                        text = order?.description ?: "Нет описания",
+                                        fontSize = 16.sp,
+                                        modifier = Modifier.padding(bottom = 10.dp)
+                                    )
+                                }
                             }
 
-                            // Курьер
-                            Text(
-                                text = "Курьер:",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.darkpurple),
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            Text(
-                                text = order?.id_courier?.let { "${it.first_name} ${it.last_name}" } ?: "Не назначен",
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(bottom = 8.dp)
-                            )
-
-                            // Телефон курьера
-                            Text(
-                                text = "Телефон:",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.darkpurple),
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            Text(
-                                text = order?.id_courier?.phone_number ?: "Нет данных",
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-
-                            // Описание
-                            Text(
-                                text = "Описание:",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.darkpurple),
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            Text(
-                                text = order?.description ?: "Нет описания",
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(bottom = 8.dp)
-                            )
                         }
                     }
                 }
             }
+        }
+
+        // Нижняя навигация на фоне
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp)
+                .background(colorResource(id = R.color.purple)) // Обеспечиваем фон
+        ) {
+            BottomNavigationBar(navController, selected = "orders_screen")
         }
     }
 }

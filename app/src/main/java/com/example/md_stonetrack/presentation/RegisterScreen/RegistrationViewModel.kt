@@ -3,14 +3,20 @@ package com.example.md_stonetrack.presentation.RegisterScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.md_stonetrack.domain.model.RegistrationResponse
-import com.example.md_stonetrack.domain.repository.RegistrationRepository
+import com.example.md_stonetrack.domain.usecase.CheckUsernameExistsUseCase
+import com.example.md_stonetrack.domain.usecase.RegisterUseCase
+import com.example.md_stonetrack.domain.usecase.ValidateRegistrationFieldsUseCase
+import com.example.md_stonetrack.domain.usecase.ValidationResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class RegistrationViewModel(
-    private val registrationRepository: RegistrationRepository
+    private val registerUserUseCase: RegisterUseCase,
+    private val checkUsernameExistsUseCase: CheckUsernameExistsUseCase,
+    private val validateRegistrationFieldsUseCase: ValidateRegistrationFieldsUseCase
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow<RegistrationUiState>(RegistrationUiState.Idle)
     val uiState: StateFlow<RegistrationUiState> = _uiState
 
@@ -34,33 +40,15 @@ class RegistrationViewModel(
         phone_number: String?
     ) {
         viewModelScope.launch {
-            println("DEBUG: Register button clicked") // Логирование
-            _uiState.value = RegistrationUiState.Loading
-
-            println("DEBUG: Checking username exists") // Логирование
-            if (registrationRepository.checkUsernameExists(username)) {
-                println("DEBUG: Username already exists") // Логирование
-                _uiState.value = RegistrationUiState.Error("Username already exists")
-                return@launch
-            }
-        }
-
-        viewModelScope.launch {
             _uiState.value = RegistrationUiState.Loading
 
             // Проверка существования username
-            if (registrationRepository.checkUsernameExists(username)) {
+            if (checkUsernameExistsUseCase(username)) {
                 _uiState.value = RegistrationUiState.Error("Username already exists")
                 return@launch
             }
 
-            // Проверка существования email
-            if (registrationRepository.checkEmailExists(email)) {
-                _uiState.value = RegistrationUiState.Error("Email already exists")
-                return@launch
-            }
-
-            val result = registrationRepository.registerUser(
+            val result = registerUserUseCase(
                 username,
                 email,
                 password,
@@ -74,5 +62,25 @@ class RegistrationViewModel(
                 else -> RegistrationUiState.Error(result.exceptionOrNull()?.message ?: "Registration failed")
             }
         }
+    }
+
+    fun validateRegistrationFields(
+        username: String,
+        email: String,
+        password: String,
+        confirmPassword: String,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String
+    ): ValidationResult {
+        return validateRegistrationFieldsUseCase(
+            username,
+            email,
+            password,
+            confirmPassword,
+            firstName,
+            lastName,
+            phoneNumber
+        )
     }
 }

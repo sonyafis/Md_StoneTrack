@@ -41,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -65,7 +66,47 @@ fun RegistrationView(
     var last_name by remember { mutableStateOf("") }
     var phone_number by remember { mutableStateOf("") }
 
+    // Дополнительное состояние для отслеживания, был ли выполнен ввод в поле
+    var isUsernameTouched by remember { mutableStateOf(false) }
+    var isEmailTouched by remember { mutableStateOf(false) }
+    var isPasswordTouched by remember { mutableStateOf(false) }
+    var isConfirmPasswordTouched by remember { mutableStateOf(false) }
+    var isFirstNameTouched by remember { mutableStateOf(false) }
+    var isLastNameTouched by remember { mutableStateOf(false) }
+    var isPhoneNumberTouched by remember { mutableStateOf(false) }
+
+    var usernameError by remember { mutableStateOf<String?>(null) }
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
+    var firstNameError by remember { mutableStateOf<String?>(null) }
+    var lastNameError by remember { mutableStateOf<String?>(null) }
+    var phoneNumberError by remember { mutableStateOf<String?>(null) }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val validationResult = viewModel.validateRegistrationFields(
+        username,
+        email,
+        password,
+        confirmPassword,
+        first_name,
+        last_name,
+        phone_number
+    )
+
+    usernameError = if (isUsernameTouched) validationResult.errors["username"] else null
+    emailError = if (isEmailTouched) validationResult.errors["email"] else null
+    passwordError = if (isPasswordTouched) validationResult.errors["password"] else null
+    confirmPasswordError = if (isConfirmPasswordTouched) validationResult.errors["confirmPassword"] else null
+    firstNameError = if (isFirstNameTouched) validationResult.errors["firstName"] else null
+    lastNameError = if (isLastNameTouched) validationResult.errors["lastName"] else null
+    phoneNumberError = if (isPhoneNumberTouched) validationResult.errors["phoneNumber"] else null
+
+    val passwordsMatch = password == confirmPassword
+    val confirmPasswordFinalError = if (isConfirmPasswordTouched) {
+        if (!passwordsMatch) "Пароли не совпадают" else confirmPasswordError
+    } else null
 
     Box(
         modifier = Modifier
@@ -170,47 +211,61 @@ fun RegistrationView(
                         RegistrationTextField(
                             value = first_name,
                             onValueChange = { first_name = it },
-                            label = "Имя"
+                            label = "Имя",
+                            errorMessage = firstNameError,
+                            onTouched = { isFirstNameTouched = true }
                         )
 
                         RegistrationTextField(
                             value = last_name,
                             onValueChange = { last_name = it },
-                            label = "Фамилия"
+                            label = "Фамилия",
+                            errorMessage = lastNameError,
+                            onTouched = { isLastNameTouched = true }
                         )
 
                         RegistrationTextField(
                             value = phone_number,
                             onValueChange = { phone_number = it },
                             label = "Номер телефона",
-                            keyboardType = KeyboardType.Phone
+                            keyboardType = KeyboardType.Phone,
+                            errorMessage = phoneNumberError,
+                            onTouched = { isPhoneNumberTouched = true }
                         )
 
                         RegistrationTextField(
                             value = email,
                             onValueChange = { email = it },
                             label = "Email",
-                            keyboardType = KeyboardType.Email
+                            keyboardType = KeyboardType.Email,
+                            errorMessage = emailError,
+                            onTouched = { isEmailTouched = true }
                         )
 
                         RegistrationTextField(
                             value = username,
                             onValueChange = { username = it },
-                            label = "Логин"
+                            label = "Логин",
+                            errorMessage = usernameError,
+                            onTouched = { isUsernameTouched = true }
                         )
 
                         RegistrationTextField(
                             value = password,
                             onValueChange = { password = it },
                             label = "Пароль",
-                            isPassword = true
+                            isPassword = true,
+                            errorMessage = passwordError,
+                            onTouched = { isPasswordTouched = true }
                         )
 
                         RegistrationTextField(
                             value = confirmPassword,
                             onValueChange = { confirmPassword = it },
                             label = "Подтверждение пароля",
-                            isPassword = true
+                            isPassword = true,
+                            errorMessage = confirmPasswordFinalError,
+                            onTouched = { isConfirmPasswordTouched = true }
                         )
                     }
 
@@ -219,21 +274,14 @@ fun RegistrationView(
                     // Кнопка (как в экране входа)
                     Button(
                         onClick = {
-                            when {
-                                username.isBlank() -> viewModel.setError("Введите логин")
-                                email.isBlank() -> viewModel.setError("Введите email")
-                                password.isBlank() -> viewModel.setError("Введите пароль")
-                                confirmPassword.isBlank() -> viewModel.setError("Подтвердите пароль")
-                                password != confirmPassword -> viewModel.setError("Пароли не совпадают")
-                                password.length < 8 -> viewModel.setError("Пароль должен содержать минимум 8 символов")
-                                !email.contains("@") -> viewModel.setError("Введите корректный email")
-                                else -> viewModel.registerUser(
+                            if (validationResult.isValid) {
+                                viewModel.registerUser(
                                     username = username,
                                     email = email,
                                     password = password,
-                                    first_name = first_name.ifBlank { null },
-                                    last_name = last_name.ifBlank { null },
-                                    phone_number = phone_number.ifBlank { null }
+                                    first_name = first_name,
+                                    last_name = last_name,
+                                    phone_number = phone_number
                                 )
                             }
                         },
@@ -313,30 +361,54 @@ private fun RegistrationTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    errorMessage: String? = null,
     isPassword: Boolean = false,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    onTouched: () -> Unit = {}
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = { Text(label, fontFamily = AppFontFamily, fontSize = 14.sp) },
-        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(58.dp),
-        shape = RoundedCornerShape(50),
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorResource(id = R.color.purple),
-            unfocusedBorderColor = colorResource(id = R.color.purple),
-            cursorColor = colorResource(id = R.color.darkpurple),
-            focusedTextColor = Color.Black,
-            unfocusedTextColor = Color.Black
-        ),
-        textStyle = LocalTextStyle.current.copy(
-            fontSize = 16.sp, // Оптимальный размер для ввода
-            color = Color.Black // Гарантированная видимость
-        ),
-        singleLine = true // Гарантирует что текст не перекрывается
-    )
+    // Создаем переменную для отслеживания фокуса на поле
+    var isFieldTouched by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = { Text(label, fontFamily = AppFontFamily, fontSize = 14.sp) },
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(58.dp)
+                .onFocusChanged { focusState ->
+                    if (focusState.isFocused || value.isNotEmpty()) {
+                        isFieldTouched = true
+                        onTouched()
+                    }
+                },
+            shape = RoundedCornerShape(50),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            isError = isFieldTouched && errorMessage != null,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = colorResource(id = R.color.purple),
+                unfocusedBorderColor = colorResource(id = R.color.purple),
+                errorBorderColor = MaterialTheme.colorScheme.error,
+                cursorColor = colorResource(id = R.color.darkpurple),
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black
+            ),
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 16.sp,
+                color = Color.Black
+            ),
+            singleLine = true
+        )
+        // Показываем сообщение об ошибке только если поле было тронуто
+        if (isFieldTouched && errorMessage != null) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 16.dp, top = 2.dp)
+            )
+        }
+    }
 }
