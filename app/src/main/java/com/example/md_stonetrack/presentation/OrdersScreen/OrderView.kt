@@ -108,7 +108,7 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
             confirmButton = {
                 Button(onClick = {
                     showSessionExpiredDialog = false
-                    navController.navigate("auth_screen") {
+                    navController.navigate("signin") {
                         popUpTo("orders_screen") { inclusive = true }
                     }
                 }) {
