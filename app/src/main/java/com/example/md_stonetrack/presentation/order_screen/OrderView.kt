@@ -1,16 +1,11 @@
-package com.example.md_stonetrack.presentation.OrdersScreen
+package com.example.md_stonetrack.presentation.order_screen
 
 import AppFontFamily
 import android.Manifest
 import android.app.Activity
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,8 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,12 +28,12 @@ import com.example.md_stonetrack.presentation.navigation.BottomNavigationBar
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.core.app.ActivityCompat
 import com.example.md_stonetrack.presentation.utils.DateFormatter
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -70,24 +63,6 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
             onConfirm = {
                 showPermissionExplanation = false
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        )
-    }
-
-    // Диалог истекшей сессии
-    if (state is OrderState.SessionExpired) {
-        AlertDialog(
-            onDismissRequest = { /* Не даем закрыть - обязателен вход */ },
-            title = { Text("Сессия истекла") },
-            text = { Text("Ваша сессия была завершена. Пожалуйста, войдите снова.") },
-            confirmButton = {
-                Button(onClick = {
-                    navController.navigate("sigin") {
-                        popUpTo("orders") { inclusive = true }
-                    }
-                }) {
-                    Text("Войти")
-                }
             }
         )
     }
@@ -208,15 +183,35 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                Text("Активные заказы:", fontSize = 20.sp)
-                                Spacer(modifier = Modifier.height(16.dp))
                                 Image(
                                     painter = painterResource(id = R.drawable.empty_orders),
                                     contentDescription = null,
                                     modifier = Modifier.size(180.dp)
                                 )
+                                Spacer(modifier = Modifier.height(20.dp))
+                                Text(
+                                    text = "У вас пока нет актуальных заказов",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Text("Здесь будут ваши заказы", fontSize = 18.sp)
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = "Когда появятся, будут отображаться здесь.",
+                                        fontSize = 16.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Text(
+                                        text = "Остальные заказы находятся в завершенных.",
+                                        fontSize = 16.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
                             }
                         }
 

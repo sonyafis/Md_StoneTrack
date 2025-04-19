@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.SplashScreen
+package com.example.md_stonetrack.presentation.splash_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

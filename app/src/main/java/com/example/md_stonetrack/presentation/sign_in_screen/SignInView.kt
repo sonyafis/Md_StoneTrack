@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.SignInScreen
+package com.example.md_stonetrack.presentation.sign_in_screen
 
 import AppFontFamily
 import androidx.compose.foundation.background
@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation

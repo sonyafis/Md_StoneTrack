@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.StartScreen
+package com.example.md_stonetrack.presentation.start_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-// presentation/viewmodel/StartViewModel.kt
 class StartViewModel : ViewModel() {
     // Создаем поток для событий навигации
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()

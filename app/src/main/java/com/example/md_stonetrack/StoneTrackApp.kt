@@ -1,9 +1,9 @@
 package com.example.md_stonetrack
 
 import android.app.Application
-import com.example.md_stonetrack.data.di.dataModule
-import com.example.md_stonetrack.data.di.domainModule
-import com.example.md_stonetrack.data.di.presentationModule
+import com.example.md_stonetrack.di.dataModule
+import com.example.md_stonetrack.di.domainModule
+import com.example.md_stonetrack.di.presentationModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
