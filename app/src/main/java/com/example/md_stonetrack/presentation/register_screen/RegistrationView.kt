@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.RegisterScreen
+package com.example.md_stonetrack.presentation.register_screen
 
 import AppFontFamily
 import androidx.compose.ui.text.font.FontWeight

@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.ProfileScreen
+package com.example.md_stonetrack.presentation.profile_screen
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

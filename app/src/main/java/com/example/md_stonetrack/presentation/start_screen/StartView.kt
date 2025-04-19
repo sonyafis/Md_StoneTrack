@@ -1,4 +1,4 @@
-package com.example.mdstonetrack.presentation.StartScreen.StartView
+package com.example.md_stonetrack.presentation.start_screen
 
 import AppFontFamily
 import MdStoneTrackTheme
@@ -32,7 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.md_stonetrack.R
-import com.example.md_stonetrack.presentation.StartScreen.StartViewModel
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight

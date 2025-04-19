@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.RegisterScreen
+package com.example.md_stonetrack.presentation.register_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

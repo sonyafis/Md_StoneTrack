@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.data.di
+package com.example.md_stonetrack.di
 
 import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
 import com.example.md_stonetrack.domain.usecase.LogoutUseCase

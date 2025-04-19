@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.data.di
+package com.example.md_stonetrack.di
 
 import com.example.md_stonetrack.data.repository.AuthRepositoryImpl
 import android.content.Context
@@ -13,7 +13,7 @@ import com.example.md_stonetrack.data.security.CryptoManager
 import com.example.md_stonetrack.domain.repository.AuthRepository
 import com.example.md_stonetrack.domain.repository.OrderRepository
 import com.example.md_stonetrack.domain.usecase.LoginUseCase
-import com.example.md_stonetrack.presentation.SignInScreen.SignInViewModel
+import com.example.md_stonetrack.presentation.sign_in_screen.SignInViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module

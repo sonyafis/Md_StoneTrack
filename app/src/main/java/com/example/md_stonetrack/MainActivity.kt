@@ -12,14 +12,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.md_stonetrack.presentation.OrderDetailScreen.OrderDetailView
-import com.example.md_stonetrack.presentation.OrdersScreen.OrderView
-import com.example.md_stonetrack.presentation.ProfileScreen.ProfileView
-import com.example.md_stonetrack.presentation.ProfileScreen.ProfileViewModel
-import com.example.md_stonetrack.presentation.RegisterScreen.RegistrationView
-import com.example.md_stonetrack.presentation.SignInScreen.SignInView
-import com.example.md_stonetrack.presentation.SplashScreen.SplashView
-import com.example.mdstonetrack.presentation.StartScreen.StartView.StartView
+import com.example.md_stonetrack.presentation.history_screen.HistoryView
+import com.example.md_stonetrack.presentation.order_detail_screen.OrderDetailView
+import com.example.md_stonetrack.presentation.order_screen.OrderView
+import com.example.md_stonetrack.presentation.profile_screen.ProfileView
+import com.example.md_stonetrack.presentation.profile_screen.ProfileViewModel
+import com.example.md_stonetrack.presentation.register_screen.RegistrationView
+import com.example.md_stonetrack.presentation.sign_in_screen.SignInView
+import com.example.md_stonetrack.presentation.splash_screen.SplashView
+import com.example.md_stonetrack.presentation.start_screen.StartView
+import com.example.md_stonetrack.presentation.history_detail_screen.HistoryDetailView
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -89,6 +91,13 @@ fun NavGraphBuilder.ordersGraph(navController: NavHostController) {
         composable("order_detail/{id_order}") { backStackEntry ->
             val id_order = backStackEntry.arguments?.getString("id_order")?.toIntOrNull()
             OrderDetailView(id_order = id_order, navController = navController)
+        }
+        composable("history_screen") {
+            HistoryView(navController)
+        }
+        composable("history_detail/{id_order}") { backStackEntry ->
+            val id_order = backStackEntry.arguments?.getString("id_order")?.toIntOrNull()
+            HistoryDetailView(id_order = id_order, navController = navController)
         }
         // Новый экран профиля
         composable("profile_screen") {

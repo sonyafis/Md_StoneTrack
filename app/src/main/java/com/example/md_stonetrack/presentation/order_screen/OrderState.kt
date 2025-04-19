@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.OrdersScreen
+package com.example.md_stonetrack.presentation.order_screen
 
 import com.example.md_stonetrack.domain.model.Order
 

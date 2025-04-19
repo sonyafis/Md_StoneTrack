@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.OrdersScreen
+package com.example.md_stonetrack.presentation.order_screen
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.md_stonetrack.domain.model.Order
 import com.example.md_stonetrack.domain.usecase.GetCurrentUserUseCase
 import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
+import com.example.md_stonetrack.domain.usecase.LogoutUseCase
 import com.example.md_stonetrack.domain.usecase.SessionExpiredException
 import com.example.md_stonetrack.presentation.utils.NotificationHelper
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,8 @@ import kotlin.collections.find
 class OrderViewModel(
     private val getOrdersUseCase: GetOrdersUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val notificationHelper: NotificationHelper
+    private val notificationHelper: NotificationHelper,
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<OrderState>(OrderState.Loading)
@@ -92,12 +94,18 @@ class OrderViewModel(
                 _state.value = OrderState.Empty
             } else {
                 checkForStatusChanges(result)
-                _state.value = OrderState.Success(result)
+                // Фильтруем заказы - исключаем доставленные
+                val activeOrders = result.filterNot {
+                    it.id_status.status_name.equals("Доставлен", ignoreCase = true)
+                }
+                if (activeOrders.isEmpty()) {
+                    _state.value = OrderState.Empty
+                } else {
+                    _state.value = OrderState.Success(activeOrders)
+                }
             }
         } catch (e: SessionExpiredException) {
             _state.value = OrderState.SessionExpired
-            // Можно добавить автоматический logout здесь
-//            authRepository.logout()
         } catch (e: Exception) {
             _state.value = OrderState.Error(
                 when {

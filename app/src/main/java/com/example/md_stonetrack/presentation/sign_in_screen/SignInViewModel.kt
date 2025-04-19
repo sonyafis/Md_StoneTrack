@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.SignInScreen
+package com.example.md_stonetrack.presentation.sign_in_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
