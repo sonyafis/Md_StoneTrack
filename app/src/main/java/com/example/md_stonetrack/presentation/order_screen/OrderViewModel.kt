@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
+import retrofit2.HttpException
+import java.io.IOException
 import kotlin.collections.find
 
 class OrderViewModel(
@@ -106,6 +108,11 @@ class OrderViewModel(
             }
         } catch (e: SessionExpiredException) {
             _state.value = OrderState.SessionExpired
+        } catch (e: IOException) {
+            _state.value = OrderState.Error("Проблема с сетью. Проверьте подключение.")
+        }
+        catch (e: HttpException) {
+            _state.value = OrderState.Error("Ошибка сервера: ${e.code()}")
         } catch (e: Exception) {
             _state.value = OrderState.Error(
                 when {

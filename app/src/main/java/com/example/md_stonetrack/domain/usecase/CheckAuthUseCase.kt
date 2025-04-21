@@ -1,7 +1,6 @@
 package com.example.md_stonetrack.domain.usecase
 
 import com.example.md_stonetrack.data.db.Dao.UserDao
-import com.example.md_stonetrack.data.db.entities.UserEntity
 import com.example.md_stonetrack.domain.repository.AuthRepository
 
 class CheckAuthUseCase(
