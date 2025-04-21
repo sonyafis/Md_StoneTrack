@@ -9,7 +9,9 @@ import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
 import com.example.md_stonetrack.domain.usecase.LoginUseCase
 import com.example.md_stonetrack.domain.usecase.LogoutUseCase
 import com.example.md_stonetrack.domain.usecase.RegisterUseCase
+import com.example.md_stonetrack.domain.usecase.SendFeedbackUseCase
 import com.example.md_stonetrack.domain.usecase.ValidateRegistrationFieldsUseCase
+import com.example.md_stonetrack.presentation.feedback_screen.FeedbackViewModel
 import com.example.md_stonetrack.presentation.history_detail_screen.HistoryDetailViewModel
 import com.example.md_stonetrack.presentation.history_screen.HistoryViewModel
 import com.example.md_stonetrack.presentation.order_detail_screen.OrderDetailViewModel
@@ -33,6 +35,7 @@ val presentationModule = module {
     viewModel { SplashViewModel(get()) }
     viewModel { RegistrationViewModel(get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get()) }
+    viewModel { FeedbackViewModel(get(), get(), get())}
     //Repository
     single<RegistrationRepository> { RegistrationRepositoryImpl(get()) }
     // UseCase
@@ -44,6 +47,7 @@ val presentationModule = module {
     single { RegisterUseCase(get()) }
     single { CheckUsernameExistsUseCase(get()) }
     single { LogoutUseCase(get()) }
+    single { SendFeedbackUseCase(get()) }
 
     single { NotificationHelper(androidContext()) }
 }

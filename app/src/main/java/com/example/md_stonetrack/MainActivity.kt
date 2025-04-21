@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.example.md_stonetrack.presentation.feedback_screen.FeedbackView
 import com.example.md_stonetrack.presentation.history_screen.HistoryView
 import com.example.md_stonetrack.presentation.order_detail_screen.OrderDetailView
 import com.example.md_stonetrack.presentation.order_screen.OrderView
@@ -99,6 +100,10 @@ fun NavGraphBuilder.ordersGraph(navController: NavHostController) {
             val id_order = backStackEntry.arguments?.getString("id_order")?.toIntOrNull()
             HistoryDetailView(id_order = id_order, navController = navController)
         }
+        composable("feedback_screen") {
+            FeedbackView(navController = navController)
+        }
+
         // Новый экран профиля
         composable("profile_screen") {
             val viewModel: ProfileViewModel = koinViewModel()

@@ -17,7 +17,7 @@ import com.example.md_stonetrack.R
 data class BottomNavItem(val route: String, val icon: ImageVector? = null, val iconResId: Int? = null)
 
 @Composable
-fun BottomNavigationBar(navController: NavController, selected: String) {
+fun BottomNavigationBar(navController: NavController, selected: String,  modifier: Modifier = Modifier ) {
     val items = listOf(
         BottomNavItem("orders_screen", iconResId = R.drawable.home),
         BottomNavItem("history_screen", iconResId = R.drawable.history),
