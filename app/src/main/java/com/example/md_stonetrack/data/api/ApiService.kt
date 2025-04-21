@@ -2,6 +2,7 @@ package com.example.md_stonetrack.data.api
 
 import com.example.md_stonetrack.data.model.AuthRequest
 import com.example.md_stonetrack.data.model.AuthResponse
+import com.example.md_stonetrack.data.model.FeedbackDTO
 import com.example.md_stonetrack.data.model.OrderDTO
 import com.example.md_stonetrack.data.model.RefreshTokenRequest
 import com.example.md_stonetrack.data.model.SuperUserDTO
@@ -26,6 +27,8 @@ interface ApiService {
 
     @GET("api/orders/")
     suspend fun getOrders(@Header("Authorization") token: String): List<OrderDTO>
+    @POST("api/feedbacks/")
+    suspend fun sendFeedback(@Header("Authorization") token: String, @Body feedback: FeedbackDTO)
 
     @POST("auth/users/")
     suspend fun registerUser(@Body request: RegistrationRequest): Response<RegistrationResponse>
