@@ -212,7 +212,7 @@ fun HistoryDetailView(
                                         Box(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(30.dp))
-                                                .background(colorResource(id = R.color.darkpurple))
+                                                .background(Color.Gray)
                                                 .padding(horizontal = 12.dp, vertical = 4.dp)
                                         ) {
                                             Text(
