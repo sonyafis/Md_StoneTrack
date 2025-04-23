@@ -21,19 +21,18 @@ class FeedbackViewModel(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(FeedbackState())
-    private var didRetry = false
     var state by mutableStateOf(FeedbackState())
         private set
 
-    fun onEvent(event: FeedbackEvent) {
-        when (event) {
-            is FeedbackEvent.UpdateFullname -> state = state.copy(fullname = event.value)
-            is FeedbackEvent.UpdateEmail -> state = state.copy(email = event.value)
-            is FeedbackEvent.UpdatePhone -> state = state.copy(phone = event.value)
-            is FeedbackEvent.UpdateMessage -> state = state.copy(message = event.value)
-            is FeedbackEvent.UpdateType -> state = state.copy(type = event.value)
-            is FeedbackEvent.Submit -> submitFeedback()
+    fun onEvent(event: FeedbackEvent) = when (event) {
+        is FeedbackEvent.Submit -> submitFeedback()
+        else -> state = when (event) {
+            is FeedbackEvent.UpdateFullname -> state.copy(fullname = event.value)
+            is FeedbackEvent.UpdateEmail -> state.copy(email = event.value)
+            is FeedbackEvent.UpdatePhone -> state.copy(phone = event.value)
+            is FeedbackEvent.UpdateMessage -> state.copy(message = event.value)
+            is FeedbackEvent.UpdateType -> state.copy(type = event.value)
+            else -> state
         }
     }
 
@@ -60,68 +59,28 @@ class FeedbackViewModel(
     private fun submitFeedback() {
         viewModelScope.launch {
             state = state.copy(isLoading = true, error = null)
-            try {
-                // Всегда получаем свежий токен
-                val currentToken = authRepository.getAccessToken()
-                    ?: throw Exception("Not authenticated")
-                Log.d("TokenCheck", "Access token: ${currentToken?.take(15)}...")
-                sendFeedbackUseCase(
-                    token = currentToken,
-                    feedback = Feedback(user_fullname = state.fullname,
+            runCatching {
+                authRepository.getAccessToken()?.let { token ->
+                    sendFeedbackUseCase(token, Feedback(
+                        user_fullname = state.fullname,
                         email = state.email,
                         message = state.message,
                         phone_number = state.phone,
                         type_feedback = state.type,
-                        id_super_user = state.id_super_user)
-                )
+                        id_super_user = state.id_super_user
+                    ))
+                } ?: throw Exception("Not authenticated")
+            }.onSuccess {
                 state = state.copy(success = true)
-            } catch (e: SessionExpiredException) {
-                if (!didRetry) {
-                    didRetry = true
-                    handleTokenRefresh()
-                } else {
-                    state = state.copy(error = "Сессия истекла, повторная попытка не удалась.")
-                }
-            } catch (e: IOException) {
-                state = state.copy(error = "Проблема с сетью. Проверьте подключение.")
-            }
-            catch (e: HttpException) {
-                state = state.copy(error = "Ошибка сервера: ${e.code()}")
-            } catch (e: Exception) {
-                state = state.copy(error = when {
-                    e.message?.contains("blacklisted") == true -> {
-                        "Сессия истекла. Требуется повторный вход."
-                    }
+            }.onFailure { e ->
+                state = state.copy(error = when (e) {
+                    is SessionExpiredException -> "Сессия истекла"
+                    is IOException -> "Проблема с сетью"
+                    is HttpException -> "Ошибка сервера: ${e.code()}"
                     else -> e.message ?: "Ошибка отправки"
                 })
-            } finally {
-                didRetry = false
-                state = state.copy(isLoading = false)
             }
-
-        }
-    }
-
-    private suspend fun handleTokenRefresh() {
-        try {
-            val refreshToken = authRepository.getRefreshToken()
-            Log.d("TokenCheck", "Refresh token: ${refreshToken?.take(15)}...")
-            if (refreshToken.isNullOrEmpty()) {
-                state = state.copy(error = "Сессия истекла. Требуется повторный вход.")
-                return
-            }
-
-            val result = authRepository.refreshTokens(refreshToken)
-            result.fold(
-                onSuccess = {
-                    submitFeedback() // Повторяем с новым токеном
-                },
-                onFailure = {
-                    state = state.copy(error = "Сессия истекла. Требуется повторный вход.")
-                }
-            )
-        } catch (e: Exception) {
-            state = state.copy(error = "Ошибка обновления сессии: ${e.localizedMessage}")
+            state = state.copy(isLoading = false)
         }
     }
 }

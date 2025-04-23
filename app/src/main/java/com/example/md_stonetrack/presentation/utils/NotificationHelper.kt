@@ -3,6 +3,7 @@ package com.example.md_stonetrack.presentation.utils
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.media.AudioAttributes
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
@@ -19,12 +20,19 @@ class NotificationHelper(private val context: Context) {
 
     private fun createNotificationChannel() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            val vibrationPattern = longArrayOf(0, 300, 200, 300)
+            val attributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build()
             val channel = NotificationChannel(
                 channelId,
                 "Обновления заказов",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Уведомления о изменении статусов заказов"
+                description = "Уведомления об изменении статуса заказа"
+                enableVibration(true)
+                setVibrationPattern(vibrationPattern)
+                setSound(null, attributes) // можно убрать звук
             }
 
             val manager = getSystemService(context, NotificationManager::class.java)
@@ -39,6 +47,7 @@ class NotificationHelper(private val context: Context) {
                 .setContentTitle("Статус изменён")
                 .setContentText("Заказ №$orderNumber обновлён")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setVibrate(longArrayOf(0, 300, 200, 300))
                 .setAutoCancel(true)
                 .build()
 

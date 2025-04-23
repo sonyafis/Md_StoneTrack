@@ -28,12 +28,10 @@ class OrderViewModel(
 
     private val _state = MutableStateFlow<OrderState>(OrderState.Loading)
     val state: StateFlow<OrderState> = _state
-
     var userName by mutableStateOf("")
-        private set
+    private var isPollingActive by mutableStateOf(true)
 
     private var lastOrders: List<Order> = emptyList()
-    private var isPollingActive by mutableStateOf(true)
 
     private fun checkForStatusChanges(newOrders: List<Order>) {
         if (lastOrders.isEmpty()) return
@@ -62,7 +60,7 @@ class OrderViewModel(
 
     init {
         loadUserName()
-        startPollingOrders()
+        startPolling()
     }
 
     private fun loadUserName() {
@@ -72,58 +70,32 @@ class OrderViewModel(
         }
     }
 
-    private fun startPollingOrders() {
-        viewModelScope.launch {
-            while (isPollingActive) {
-                try {
-                    loadOrders()
-                } catch (e: Exception) {
-                    if (e.message?.contains("Session expired") == true) {
-                        _state.value = OrderState.SessionExpired
-                        isPollingActive = false
-                        break
-                    }
-                }
-                delay(10000L) // каждые 10 секунд
-            }
+    private fun startPolling() = viewModelScope.launch {
+        while (isPollingActive) {
+            loadOrders()
+            delay(10000)
         }
     }
 
     private suspend fun loadOrders() {
-        try {
-            val result = getOrdersUseCase()
-            if (result.isEmpty()) {
-                _state.value = OrderState.Empty
-            } else {
-                checkForStatusChanges(result)
-                // Фильтруем заказы - исключаем доставленные
-                val activeOrders = result.filterNot {
-                    it.id_status.status_name.equals("Доставлен", ignoreCase = true)
-                }
-                if (activeOrders.isEmpty()) {
-                    _state.value = OrderState.Empty
-                } else {
-                    _state.value = OrderState.Success(activeOrders)
-                }
+        runCatching {
+            getOrdersUseCase().let { newOrders ->
+                checkForStatusChanges(newOrders)
+                lastOrders = newOrders
+                newOrders.filterNot { it.id_status.status_name.equals("Доставлен", true) }
+                    .takeIf { it.isNotEmpty() }
+                    ?.let { _state.value = OrderState.Success(it) }
+                    ?: run { _state.value = OrderState.Empty }
             }
-        } catch (e: SessionExpiredException) {
-            _state.value = OrderState.SessionExpired
-        } catch (e: IOException) {
-            _state.value = OrderState.Error("Проблема с сетью. Проверьте подключение.")
-        }
-        catch (e: HttpException) {
-            _state.value = OrderState.Error("Ошибка сервера: ${e.code()}")
-        } catch (e: Exception) {
-            _state.value = OrderState.Error(
-                when {
-                    e.message?.contains("blacklisted") == true -> "Сессия истекла. Требуется повторный вход."
-                    else -> e.message ?: "Неизвестная ошибка"
-                }
-            )
+        }.onFailure { e ->
+            _state.value = when (e) {
+                is SessionExpiredException -> OrderState.SessionExpired.also { stopPolling() }
+                is IOException -> OrderState.Error("Проблема с сетью")
+                is HttpException -> OrderState.Error("Ошибка сервера: ${e.code()}")
+                else -> OrderState.Error(e.message ?: "Неизвестная ошибка")
+            }
         }
     }
 
-    fun stopPolling() {
-        isPollingActive = false
-    }
+    fun stopPolling() { isPollingActive = false }
 }

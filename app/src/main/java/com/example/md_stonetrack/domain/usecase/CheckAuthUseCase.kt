@@ -14,30 +14,30 @@ class CheckAuthUseCase(
 
     suspend operator fun invoke(): AuthResult {
         return try {
-            val access = authRepository.getAccessToken()
-            val refresh = authRepository.getRefreshToken()
+            val accessToken = authRepository.getAccessToken()
 
-            if (!access.isNullOrEmpty()) {
-                val isAccessValid = runCatching {
-                    authRepository.validateAccessToken(access)
-                }.getOrElse { false }
-
-                if (isAccessValid) {
-                    return getUserRole()
+            when {
+                accessToken == null -> AuthResult.Unauthorized
+                authRepository.validateAccessToken(accessToken) -> {
+                    authRepository.getCurrentUser()?.let { user ->
+                        AuthResult.Authorized(user.type_user ?: "default")
+                    } ?: AuthResult.Unauthorized
                 }
-
-                if (!refresh.isNullOrEmpty()) {
-                    val refreshResult = authRepository.refreshTokens(refresh)
-                    if (refreshResult.isSuccess) {
-                        return getUserRole()
-                    }
+                else -> {
+                    val refreshToken = authRepository.getRefreshToken()
+                    if (!refreshToken.isNullOrEmpty()) {
+                        authRepository.refreshTokens(refreshToken).fold(
+                            onSuccess = {
+                                authRepository.getCurrentUser()?.let { user ->
+                                    AuthResult.Authorized(user.type_user ?: "default")
+                                } ?: AuthResult.Unauthorized
+                            },
+                            onFailure = { AuthResult.Unauthorized }
+                        )
+                    } else AuthResult.Unauthorized
                 }
             }
-
-            authRepository.logout()
-            AuthResult.Unauthorized
         } catch (e: Exception) {
-            authRepository.logout()
             AuthResult.Unauthorized
         }
     }
