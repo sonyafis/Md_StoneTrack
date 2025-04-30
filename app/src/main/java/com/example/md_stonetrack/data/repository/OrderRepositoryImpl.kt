@@ -1,6 +1,7 @@
 package com.example.md_stonetrack.data.repository
 
 import com.example.md_stonetrack.data.api.ApiService
+import com.example.md_stonetrack.data.api.RetrofitClient.apiService
 import com.example.md_stonetrack.data.model.StatusDTO
 import com.example.md_stonetrack.data.model.SuperUserDTO
 import com.example.md_stonetrack.domain.model.Order
@@ -54,4 +55,13 @@ class OrderRepositoryImpl(private val api: ApiService) : OrderRepository {
             emptyList() // Возвращаем пустой список при ошибке сети
         }
     }
+    override suspend fun updateOrderStatus(orderId: Int, newStatusId: Int): Boolean {
+        return try {
+            apiService.updateOrderStatus(orderId, mapOf("id_status" to newStatusId))
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 }

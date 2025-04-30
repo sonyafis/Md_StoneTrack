@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.feedback_screen
+package com.example.md_stonetrack.presentation.client.feedback_screen
 
 import AppFontFamily
 import android.util.LayoutDirection

@@ -12,17 +12,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.md_stonetrack.presentation.feedback_screen.FeedbackView
-import com.example.md_stonetrack.presentation.history_screen.HistoryView
-import com.example.md_stonetrack.presentation.order_detail_screen.OrderDetailView
-import com.example.md_stonetrack.presentation.order_screen.OrderView
-import com.example.md_stonetrack.presentation.profile_screen.ProfileView
-import com.example.md_stonetrack.presentation.profile_screen.ProfileViewModel
+import com.example.md_stonetrack.presentation.client.feedback_screen.FeedbackView
+import com.example.md_stonetrack.presentation.client.history_screen.HistoryView
+import com.example.md_stonetrack.presentation.client.order_detail_screen.OrderDetailView
+import com.example.md_stonetrack.presentation.client.order_screen.OrderView
+import com.example.md_stonetrack.presentation.client.profile_screen.ProfileView
+import com.example.md_stonetrack.presentation.client.profile_screen.ProfileViewModel
 import com.example.md_stonetrack.presentation.register_screen.RegistrationView
 import com.example.md_stonetrack.presentation.sign_in_screen.SignInView
 import com.example.md_stonetrack.presentation.splash_screen.SplashView
 import com.example.md_stonetrack.presentation.start_screen.StartView
-import com.example.md_stonetrack.presentation.history_detail_screen.HistoryDetailView
+import com.example.md_stonetrack.presentation.client.history_detail_screen.HistoryDetailView
+import com.example.md_stonetrack.presentation.courier.courier_history_detail_screen.CourierHistoryDetailView
+import com.example.md_stonetrack.presentation.courier.courier_history_screen.CourierHistoryView
+import com.example.md_stonetrack.presentation.courier.courier_order_detail_screen.CourierOrderDetailView
+import com.example.md_stonetrack.presentation.courier.courier_order_screen.CourierView
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -125,8 +129,18 @@ fun NavGraphBuilder.courierGraph(navController: NavHostController) {
         route = "courier_graph"
     ) {
         composable("courier_screen") {
-            Text("Экран курьера")
+            CourierView(navController)
         }
-        // Другие экраны графа курьера
+        composable("courier_order_detail/{id_order}") { backStackEntry ->
+            val id_order = backStackEntry.arguments?.getString("id_order")?.toIntOrNull()
+            CourierOrderDetailView(id_order = id_order, navController = navController)
+        }
+        composable("courier_history_screen") {
+            CourierHistoryView(navController)
+        }
+        composable("courier_history_detail/{id_order}") { backStackEntry ->
+            val id_order = backStackEntry.arguments?.getString("id_order")?.toIntOrNull()
+            CourierHistoryDetailView(id_order = id_order, navController = navController)
+        }
     }
 }

@@ -1,8 +1,8 @@
-package com.example.md_stonetrack.presentation.order_detail_screen
+package com.example.md_stonetrack.presentation.courier.courier_history_detail_screen
 
 import com.example.md_stonetrack.domain.model.Order
 
-data class OrderDetailState(
+data class CourierHistoryDetailState(
     val isLoading: Boolean = false,
     val order: Order? = null,
     val error: String? = null

@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.profile_screen
+package com.example.md_stonetrack.presentation.client.profile_screen
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text

@@ -1,5 +1,4 @@
-// HistoryViewModel.kt
-package com.example.md_stonetrack.presentation.history_screen
+package com.example.md_stonetrack.presentation.client.history_screen
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

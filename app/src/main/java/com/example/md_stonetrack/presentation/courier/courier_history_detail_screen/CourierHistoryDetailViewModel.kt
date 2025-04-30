@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.history_detail_screen
+package com.example.md_stonetrack.presentation.courier.courier_history_detail_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class HistoryDetailViewModel(
-    private val getOrdersUseCase: GetOrdersUseCase // или отдельный use case для одного заказа
+class CourierHistoryDetailViewModel(
+    private val getOrdersUseCase: GetOrdersUseCase
 ) : ViewModel() {
 
-    private val _orderState = MutableStateFlow(HistoryDetailState())
-    val orderState: StateFlow<HistoryDetailState> = _orderState
+    private val _orderState = MutableStateFlow(CourierHistoryDetailState())
+    val orderState: StateFlow<CourierHistoryDetailState> = _orderState
 
     fun loadOrderDetail(id_order: Int) {
         viewModelScope.launch {
@@ -20,9 +20,9 @@ class HistoryDetailViewModel(
             try {
                 val allOrders = getOrdersUseCase()
                 val order = allOrders.find { it.id_order == id_order }
-                _orderState.value = HistoryDetailState(order = order)
+                _orderState.value = CourierHistoryDetailState(order = order)
             } catch (e: Exception) {
-                _orderState.value = HistoryDetailState(error = e.message ?: "Неизвестная ошибка")
+                _orderState.value = CourierHistoryDetailState(error = e.message ?: "Неизвестная ошибка")
             }
         }
     }

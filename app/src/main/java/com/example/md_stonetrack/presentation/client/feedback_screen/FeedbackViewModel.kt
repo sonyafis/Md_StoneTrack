@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.feedback_screen
+package com.example.md_stonetrack.presentation.client.feedback_screen
 
 import android.util.Log
 import androidx.compose.runtime.getValue

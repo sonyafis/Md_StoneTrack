@@ -12,7 +12,9 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -38,4 +40,10 @@ interface ApiService {
 
     @GET("auth/users/check_email/")
     suspend fun checkEmailExists(@Query("email") email: String): Response<Boolean>
+    @PATCH("api/orders/{id}/")
+    suspend fun updateOrderStatus(
+        @Path("id") id: Int,
+        @Body statusUpdate: Map<String, Int>
+    )
+
 }

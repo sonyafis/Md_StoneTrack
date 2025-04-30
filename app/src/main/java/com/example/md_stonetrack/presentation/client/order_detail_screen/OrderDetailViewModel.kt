@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.order_detail_screen
+package com.example.md_stonetrack.presentation.client.order_detail_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

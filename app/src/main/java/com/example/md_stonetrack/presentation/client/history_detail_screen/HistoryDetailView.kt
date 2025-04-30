@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.history_detail_screen
+package com.example.md_stonetrack.presentation.client.history_detail_screen
 
 import AppFontFamily
 import androidx.compose.foundation.BorderStroke
@@ -235,7 +235,7 @@ fun HistoryDetailView(
 
                                     // Телефон курьера
                                     Text(
-                                        text = "Телефон: ${order?.id_courier?.phone_number ?: "Нет данных"}",
+                                        text = "Телефон курьера: ${order?.id_courier?.phone_number ?: "Нет данных"}",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Medium,
                                         color = Color.Black
@@ -269,7 +269,7 @@ fun HistoryDetailView(
                 .padding(bottom = 16.dp)
                 .background(colorResource(id = R.color.purple)) // Обеспечиваем фон
         ) {
-            BottomNavigationBar(navController, selected = "orders_screen")
+            BottomNavigationBar(navController, selected = "history_screen")
         }
     }
 }

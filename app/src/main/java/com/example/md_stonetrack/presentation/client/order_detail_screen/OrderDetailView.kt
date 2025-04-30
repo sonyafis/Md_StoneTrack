@@ -1,4 +1,4 @@
-package com.example.md_stonetrack.presentation.order_detail_screen
+package com.example.md_stonetrack.presentation.client.order_detail_screen
 
 import AppFontFamily
 import androidx.compose.foundation.BorderStroke
@@ -235,7 +235,7 @@ fun OrderDetailView(
 
                                     // Телефон курьера
                                     Text(
-                                        text = "Телефон: ${order?.id_courier?.phone_number ?: "Нет данных"}",
+                                        text = "Телефон курьера: ${order?.id_courier?.phone_number ?: "Нет данных"}",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Medium,
                                         color = Color.Black
