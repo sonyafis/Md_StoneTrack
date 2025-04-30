@@ -254,6 +254,15 @@ fun CourierHistoryDetailView(
                                         fontSize = 16.sp,
                                         modifier = Modifier.padding(bottom = 10.dp)
                                     )
+                                    order?.delivered_at?.let { deliveredAt ->
+                                        Text(
+                                            text = "Завершено: ${DateFormatter.formatDateTime(deliveredAt)}",
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Color.Black,
+                                            modifier = Modifier.padding(top = 8.dp)
+                                        )
+                                    }
                                 }
                             }
 
