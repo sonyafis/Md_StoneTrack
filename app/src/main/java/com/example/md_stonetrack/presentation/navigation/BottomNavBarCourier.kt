@@ -23,7 +23,7 @@ fun BottomNavigationBarCourier(navController: NavController, selected: String,  
         BottomNavigationItem("courier_history_screen", iconResId = R.drawable.history),
         BottomNavigationItem("analytics_screen", iconResId = R.drawable.home),
         BottomNavigationItem("courier_feedback_screen", iconResId = R.drawable.feedback),
-        BottomNavigationItem("profile_screen", iconResId = R.drawable.profile),
+        BottomNavigationItem("courier_profile_screen", iconResId = R.drawable.profile),
     )
 
     Card(

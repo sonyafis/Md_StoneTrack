@@ -1,10 +1,10 @@
 package com.example.md_stonetrack.di
 
-import com.example.md_stonetrack.data.repository.RegistrationRepositoryImpl
-import com.example.md_stonetrack.domain.repository.RegistrationRepository
 import com.example.md_stonetrack.domain.usecase.CheckAuthUseCase
 import com.example.md_stonetrack.domain.usecase.CheckUsernameExistsUseCase
 import com.example.md_stonetrack.domain.usecase.DeleteAccountUseCase
+import com.example.md_stonetrack.domain.usecase.GetAccessTokenUseCase
+import com.example.md_stonetrack.domain.usecase.GetCurrentUserByIdUseCase
 import com.example.md_stonetrack.domain.usecase.GetCurrentUserUseCase
 import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
 import com.example.md_stonetrack.domain.usecase.LoginUseCase
@@ -19,6 +19,7 @@ import com.example.md_stonetrack.presentation.client.history_screen.HistoryViewM
 import com.example.md_stonetrack.presentation.client.order_detail_screen.OrderDetailViewModel
 import com.example.md_stonetrack.presentation.client.order_screen.OrderViewModel
 import com.example.md_stonetrack.presentation.client.profile_screen.ProfileViewModel
+import com.example.md_stonetrack.presentation.courier.courier_feedback_screen.CourierFeedbackViewModel
 import com.example.md_stonetrack.presentation.courier.courier_history_detail_screen.CourierHistoryDetailViewModel
 import com.example.md_stonetrack.presentation.courier.courier_history_screen.CourierHistoryViewModel
 import com.example.md_stonetrack.presentation.courier.courier_order_detail_screen.CourierOrderDetailViewModel
@@ -45,13 +46,14 @@ val presentationModule = module {
     viewModel { RegistrationViewModel(get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get()) }
     viewModel { CourierHistoryViewModel(get(), get(), get()) }
-    viewModel { FeedbackViewModel(get(), get(), get())}
-    //Repository
-    single<RegistrationRepository> { RegistrationRepositoryImpl(get()) }
+    viewModel { FeedbackViewModel(get(), get(), get(), get())}
+    viewModel { CourierFeedbackViewModel(get(), get(), get(), get())}
+
     // UseCase
     factory { LoginUseCase(get()) }
     factory { GetOrdersUseCase(orderRepository = get(), authRepository = get()) }
     factory { GetCurrentUserUseCase(get()) }
+    factory { GetCurrentUserByIdUseCase(get()) }
     factory { CheckAuthUseCase(get(), get()) }
     single { ValidateRegistrationFieldsUseCase() }
     single { RegisterUseCase(get()) }
@@ -60,6 +62,7 @@ val presentationModule = module {
     single { SendFeedbackUseCase(get()) }
     single { UpdateOrderStatusUseCase(get()) }
     single { DeleteAccountUseCase(get()) }
+    single { GetAccessTokenUseCase(get()) }
 
     single { NotificationHelper(androidContext()) }
 }

@@ -10,5 +10,4 @@ data class FeedbackState(
     val success: Boolean = false,
     val error: String? = null,
     val token: String = "",
-    val id_super_user: Int = 1
 )

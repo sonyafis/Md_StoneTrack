@@ -14,4 +14,6 @@ interface AuthRepository {
     suspend fun refreshTokens(refreshToken: String): Result<AuthTokens>
     suspend fun validateAccessToken(token: String): Boolean
     suspend fun deleteAccount(): Boolean
+    suspend fun saveUserId(userId: Int)
+    suspend fun getCurrentUserId(): Int?
 }

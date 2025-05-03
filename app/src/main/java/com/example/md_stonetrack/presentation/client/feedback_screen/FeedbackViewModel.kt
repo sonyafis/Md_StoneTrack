@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.md_stonetrack.domain.model.Feedback
 import com.example.md_stonetrack.domain.repository.AuthRepository
+import com.example.md_stonetrack.domain.usecase.GetAccessTokenUseCase
+import com.example.md_stonetrack.domain.usecase.GetCurrentUserByIdUseCase
 import com.example.md_stonetrack.domain.usecase.GetCurrentUserUseCase
 import com.example.md_stonetrack.domain.usecase.SendFeedbackUseCase
 import com.example.md_stonetrack.domain.usecase.SessionExpiredException
@@ -18,7 +20,8 @@ import retrofit2.HttpException
 class FeedbackViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val sendFeedbackUseCase: SendFeedbackUseCase,
-    private val authRepository: AuthRepository,
+    private val getCurrentUserIdUseCase: GetCurrentUserByIdUseCase,
+    private val getAccessTokenUseCase: GetAccessTokenUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(FeedbackState())
@@ -47,7 +50,6 @@ class FeedbackViewModel(
                     fullname = "${user.first_name.orEmpty()} ${user.last_name.orEmpty()}",
                     email = user.email,
                     phone = user.phone_number.orEmpty(),
-                    id_super_user = user.id
                 )
             }
         }
@@ -58,28 +60,32 @@ class FeedbackViewModel(
     private fun submitFeedback() {
         viewModelScope.launch {
             state = state.copy(isLoading = true, error = null)
-            runCatching {
-                authRepository.getAccessToken()?.let { token ->
-                    sendFeedbackUseCase(token, Feedback(
-                        user_fullname = state.fullname,
-                        email = state.email,
-                        message = state.message,
-                        phone_number = state.phone,
-                        type_feedback = state.type,
-                        id_super_user = state.id_super_user
-                    ))
-                } ?: throw Exception("Not authenticated")
-            }.onSuccess {
-                state = state.copy(success = true)
-            }.onFailure { e ->
-                state = state.copy(error = when (e) {
-                    is SessionExpiredException -> "Сессия истекла"
-                    is IOException -> "Проблема с сетью"
-                    is HttpException -> "Ошибка сервера: ${e.code()}"
-                    else -> e.message ?: "Ошибка отправки"
-                })
+            val result = runCatching {
+                val token = getAccessTokenUseCase() ?: throw Exception("Not authenticated")
+                val userId = getCurrentUserIdUseCase()
+                if (token == null || userId == null) {
+                    throw Exception("Не авторизован")
+                }
+                sendFeedbackUseCase(token, Feedback(
+                    user_fullname = state.fullname,
+                    email = state.email,
+                    message = state.message,
+                    phone_number = state.phone,
+                    type_feedback = state.type,
+                    id_super_user = userId
+                ))
             }
-            state = state.copy(isLoading = false)
+            state = when {
+                result.isSuccess -> state.copy(success = true)
+                else -> state.copy(
+                    error = when (val e = result.exceptionOrNull()) {
+                        is IOException -> "Проблема с сетью"
+                        is HttpException -> "Ошибка сервера: ${e.code()}"
+                        else -> e?.message ?: "Ошибка отправки"
+                    }
+                )
+            }.copy(isLoading = false)
+
         }
     }
 }

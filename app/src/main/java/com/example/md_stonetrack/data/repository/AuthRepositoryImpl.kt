@@ -2,6 +2,7 @@ package com.example.md_stonetrack.data.repository
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import com.example.md_stonetrack.data.api.ApiService
 import com.example.md_stonetrack.data.db.Dao.UserDao
 import com.example.md_stonetrack.data.db.entities.UserEntity
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.map
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.md_stonetrack.data.model.RefreshTokenRequest
 import com.example.md_stonetrack.data.security.CryptoManager
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -65,16 +67,17 @@ class AuthRepositoryImpl(
                     if (authResponse.access != null && authResponse.refresh != null) {
                         saveTokens(authResponse.access, authResponse.refresh)
 
-                        // Получаем детали пользователя
                         val userDetailsResponse = apiService.getUserDetails("Bearer ${authResponse.access}")
 
                         if (userDetailsResponse.isSuccessful) {
                             val userDetails = userDetailsResponse.body()
 
-                            // Сохраняем данные пользователя в Room
+                            val userId = userDetails?.id_super_user ?: throw Exception("User ID is null")
+                            saveUserId(userId)
+
                             userDao.upsertUser(
                                 UserEntity(
-                                    id = 1,
+                                    id = userId,
                                     name = username,
                                     email = userDetails?.email ?: "",
                                     first_name = userDetails?.first_name,
@@ -84,12 +87,11 @@ class AuthRepositoryImpl(
                                 )
                             )
 
-                            // Возвращаем токены + роль пользователя
                             return AuthResult.Success(
                                 AuthTokens(
                                     accessToken = authResponse.access,
                                     refreshToken = authResponse.refresh,
-                                    userType = userDetails?.type_user // <- внутри успешного ответа
+                                    userType = userDetails?.type_user
                                 )
                             )
                         }
@@ -107,7 +109,6 @@ class AuthRepositoryImpl(
 
     override suspend fun validateAccessToken(token: String): Boolean {
         return try {
-            // Используем любой защищенный endpoint для проверки
             val response = apiService.getUserDetails("Bearer $token")
             response.isSuccessful
         } catch (e: Exception) {
@@ -125,7 +126,9 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun logout() {
-        dataStore.edit { it.clear() }
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
         userDao.clearUser()
     }
 
@@ -144,7 +147,8 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun getCurrentUser(): UserEntity? {
-        return userDao.getUserById(1)
+        val userId = getCurrentUserId() ?: return null
+        return userDao.getUserById(userId)
     }
 
     override suspend fun deleteAccount(): Boolean {
@@ -178,8 +182,19 @@ class AuthRepositoryImpl(
         }
     }
 
+    override suspend fun saveUserId(userId: Int) {
+        dataStore.edit { preferences ->
+            preferences[USER_ID_KEY] = userId
+        }
+    }
+
+    override suspend fun getCurrentUserId(): Int? {
+        return dataStore.data.map { it[USER_ID_KEY] }.firstOrNull()
+    }
+
     companion object {
         val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
         val REFRESH_TOKEN_KEY = stringPreferencesKey("refresh_token")
+        val USER_ID_KEY = intPreferencesKey("user_id")
     }
 }

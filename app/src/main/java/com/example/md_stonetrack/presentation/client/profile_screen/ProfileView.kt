@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -257,12 +258,17 @@ private fun ProfileContent(
                         modifier = Modifier
                             .size(100.dp)
                             .background(
-                                color = colorResource(id = R.color.light_gray),
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        colorResource(id = R.color.purple),
+                                        colorResource(id = R.color.darkpurple)
+                                    )
+                                ),
                                 shape = CircleShape
                             )
                             .border(
                                 width = 2.dp,
-                                color = colorResource(id = R.color.purple),
+                                color = colorResource(id = R.color.darkpurple),
                                 shape = CircleShape
                             )
                             .padding(8.dp),
@@ -270,7 +276,7 @@ private fun ProfileContent(
                     ) {
                         Text(
                             text = userName.first().toString().uppercase(),
-                            color = colorResource(id = R.color.purple),
+                            color = Color.White,
                             fontSize = 48.sp,
                             fontWeight = FontWeight.Bold
                         )

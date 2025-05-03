@@ -22,6 +22,7 @@ import com.example.md_stonetrack.presentation.sign_in_screen.SignInView
 import com.example.md_stonetrack.presentation.splash_screen.SplashView
 import com.example.md_stonetrack.presentation.start_screen.StartView
 import com.example.md_stonetrack.presentation.client.history_detail_screen.HistoryDetailView
+import com.example.md_stonetrack.presentation.courier.courier_feedback_screen.CourierFeedbackView
 import com.example.md_stonetrack.presentation.courier.courier_history_detail_screen.CourierHistoryDetailView
 import com.example.md_stonetrack.presentation.courier.courier_history_screen.CourierHistoryView
 import com.example.md_stonetrack.presentation.courier.courier_order_detail_screen.CourierOrderDetailView
@@ -63,7 +64,6 @@ fun Nav() {
     }
 }
 
-// Отдельные графы для разных фич
 fun NavGraphBuilder.authGraph(navController: NavHostController) {
     navigation(
         startDestination = "start_screen",
@@ -103,6 +103,7 @@ fun NavGraphBuilder.ordersGraph(navController: NavHostController) {
             val id_order = backStackEntry.arguments?.getString("id_order")?.toIntOrNull()
             HistoryDetailView(id_order = id_order, navController = navController)
         }
+
         composable("feedback_screen") {
             FeedbackView(navController = navController)
         }
@@ -134,6 +135,9 @@ fun NavGraphBuilder.courierGraph(navController: NavHostController) {
         composable("courier_history_detail/{id_order}") { backStackEntry ->
             val id_order = backStackEntry.arguments?.getString("id_order")?.toIntOrNull()
             CourierHistoryDetailView(id_order = id_order, navController = navController)
+        }
+        composable("courier_feedback_screen") {
+            CourierFeedbackView(navController = navController)
         }
     }
 }
