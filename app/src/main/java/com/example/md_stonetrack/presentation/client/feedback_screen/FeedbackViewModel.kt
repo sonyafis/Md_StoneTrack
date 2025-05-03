@@ -47,8 +47,7 @@ class FeedbackViewModel(
                     fullname = "${user.first_name.orEmpty()} ${user.last_name.orEmpty()}",
                     email = user.email,
                     phone = user.phone_number.orEmpty(),
-                    id_super_user = user.id,
-                    type = user.type_user.orEmpty() // если хочешь его потом использовать
+                    id_super_user = user.id
                 )
             }
         }

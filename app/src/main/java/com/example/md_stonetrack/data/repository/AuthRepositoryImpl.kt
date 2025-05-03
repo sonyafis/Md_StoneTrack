@@ -63,7 +63,6 @@ class AuthRepositoryImpl(
             if (response.isSuccessful) {
                 response.body()?.let { authResponse ->
                     if (authResponse.access != null && authResponse.refresh != null) {
-                        // Сохраняем токены в DataStore
                         saveTokens(authResponse.access, authResponse.refresh)
 
                         // Получаем детали пользователя
@@ -126,8 +125,8 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun logout() {
-        dataStore.edit { it.clear() } // Очистить токены в DataStore
-        userDao.clearUser() // Очистить данные пользователя в Room
+        dataStore.edit { it.clear() }
+        userDao.clearUser()
     }
 
     override suspend fun isUserAuthenticated(): Boolean {
@@ -148,6 +147,36 @@ class AuthRepositoryImpl(
         return userDao.getUserById(1)
     }
 
+    override suspend fun deleteAccount(): Boolean {
+        return try {
+            val accessToken = getAccessToken() ?: return false
+
+            val response = apiService.deleteAccount("Bearer $accessToken")
+
+            if (response.isSuccessful) {
+                logout()
+                true
+            } else {
+                when (response.code()) {
+                    401 -> {
+                        val refreshToken = getRefreshToken() ?: return false
+
+                        when (val newTokens = runCatching { refreshTokens(refreshToken) }.getOrNull()) {
+                            is AuthTokens -> {
+                                apiService.deleteAccount("Bearer ${newTokens.accessToken}")
+                                    .isSuccessful
+                                    .also { if (it) logout() }
+                            }
+                            else -> false
+                        }
+                    }
+                    else -> false
+                }
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     companion object {
         val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")

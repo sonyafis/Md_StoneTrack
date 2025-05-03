@@ -23,26 +23,19 @@ import org.koin.dsl.module
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth_preferences")
 
 val dataModule = module {
-
-    // ApiService
     single<ApiService> { RetrofitClient.apiService }
 
-    // Room
     single { AppDatabase.getDatabase(androidContext()) }
     single { get<AppDatabase>().userDao() }
     single { CryptoManager() }
 
-    // DataStore
     single<DataStore<Preferences>> { androidContext().dataStore }
 
-    // Репозитории
     single<AuthRepository> { AuthRepositoryImpl(get(), androidContext(), get()) }
     single<OrderRepository> { OrderRepositoryImpl(get()) }
     single<FeedbackRepository> { FeedbackRepositoryImpl(get()) }
 
-    // UseCases
     factory { LoginUseCase(get()) }
 
-    // ViewModels
     viewModelOf(::SignInViewModel)
 }

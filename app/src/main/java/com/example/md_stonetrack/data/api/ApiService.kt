@@ -10,6 +10,7 @@ import com.example.md_stonetrack.domain.model.RegistrationRequest
 import com.example.md_stonetrack.domain.model.RegistrationResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -46,4 +47,8 @@ interface ApiService {
         @Body statusUpdate: Map<String, Int>
     )
 
+    @DELETE("api/users/delete")
+    suspend fun deleteAccount(
+        @Header("Authorization") token: String
+    ): Response<Unit>
 }

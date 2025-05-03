@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">Md_StoneTrack</string>
     <string name="Title">Md_StoneTrack</string>
+    <string name="AboutUs_1">С самого начала нашего дела, мы стремились не просто быть «одной из фирм», производящей изделия из акрила. Мы хотели быть первыми, быть лидером отрасли, флагманом всей индустрии. Поэтому мы стремимся предоставлять нашим клиентам максимум преимуществ:</string>
+    <string name="AboutUs_2">Благодаря этим преимуществам, нас выбирают наши клиенты и советуют вам. Вы можете довериться нашей компетентности и опыту, как сделали уже многие. \n\nБудем рады сотрудничеству с Вами!</string>
+    <string name="AboutUs_3">Наши контакты:</string>
+    <string name="AboutUs_list1_1">• Высочайшее качество производимых изделий</string>
+    <string name="AboutUs_list1_2">• Гарантия 2 года на изделие</string>
+    <string name="AboutUs_list1_3">• Бесплатный монтаж изделия</string>
+    <string name="AboutUs_list1_4">• Срок производства до 10 дней</string>
+    <string name="AboutUs_list1_5">• Собственное производство</string>
+    <string name="AboutUs_list2_1">г. Ростов-на-Дону</string>
+    <string name="AboutUs_list2_2">Ул. Лермонтовская 197/73, оф. 201</string>
+    <string name="AboutUs_list2_3">Тел.: +7 928 102-88-39, +7 918 508-84-31</string>
+    <string name="AboutUs_list2_4">E-mail: md-stone@mail.ru</string>
 </resources>

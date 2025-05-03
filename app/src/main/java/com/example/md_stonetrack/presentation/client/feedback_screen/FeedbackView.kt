@@ -128,8 +128,9 @@ private fun FeedbackFormScreen(
                     modifier = Modifier
                         .padding(24.dp)
                         .verticalScroll(rememberScrollState())
+
                 ) {
-                    // Заголовок с номером заказа
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -149,82 +150,91 @@ private fun FeedbackFormScreen(
                             )
                         }
                     }
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        FeedbackTextField(
-                            label = "Имя и фамилия",
-                            value = state.fullname,
-                            onValueChange = { viewModel.onEvent(FeedbackEvent.UpdateFullname(it)) }
-                        )
-
-                        FeedbackTextField(
-                            label = "Email",
-                            value = state.email,
-                            keyboardType = KeyboardType.Email,
-                            onValueChange = { viewModel.onEvent(FeedbackEvent.UpdateEmail(it)) }
-                        )
-
-                        FeedbackTextField(
-                            label = "Номер телефона",
-                            value = state.phone,
-                            keyboardType = KeyboardType.Phone,
-                            onValueChange = { viewModel.onEvent(FeedbackEvent.UpdatePhone(it)) }
-                        )
-
-                        // Поле выбора типа обращения
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                    Column{
+                        Surface (
+                            shape = RoundedCornerShape(16.dp),
+                            border = BorderStroke(2.dp, colorResource(id = R.color.purple)),
+                            color = Color.White,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp)
+                                .align(Alignment.CenterHorizontally)
                         ) {
-                            Text(
-                                text = "Тип обращения:",
-                                fontSize = 16.sp,
-                                color = Color.Black,
-                                modifier = Modifier.weight(1f)
-                            )
-
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            FeedbackTypeDropdown(
-                                selected = state.type,
-                                onSelect = { viewModel.onEvent(FeedbackEvent.UpdateType(it)) },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-
-                        // Поле сообщения
-                        Column {
-                            Text(
-                                text = "Сообщение:",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium,
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            OutlinedTextField(
-                                value = state.message,
-                                onValueChange = { viewModel.onEvent(FeedbackEvent.UpdateMessage(it)) },
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(18.dp), // Добавим отступы между блоками
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(120.dp),
-                                singleLine = false,
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = colorResource(R.color.darkpurple),
-                                    unfocusedBorderColor = colorResource(R.color.darkpurple)
+                                    .padding(20.dp)
+                            ) {
+                                FeedbackTextField(
+                                    label = "Имя и фамилия",
+                                    value = state.fullname,
+                                    onValueChange = { viewModel.onEvent(FeedbackEvent.UpdateFullname(it)) }
                                 )
-                            )
-                        }
 
-                        // Кнопка отправки
+                                FeedbackTextField(
+                                    label = "Email",
+                                    value = state.email,
+                                    keyboardType = KeyboardType.Email,
+                                    onValueChange = { viewModel.onEvent(FeedbackEvent.UpdateEmail(it)) }
+                                )
+
+                                FeedbackTextField(
+                                    label = "Номер телефона",
+                                    value = state.phone,
+                                    keyboardType = KeyboardType.Phone,
+                                    onValueChange = { viewModel.onEvent(FeedbackEvent.UpdatePhone(it)) }
+                                )
+
+                                // Поле выбора типа обращения
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = "Тип обращения:",
+                                        fontSize = 16.sp,
+                                        color = Color.Black,
+                                        modifier = Modifier.weight(1f)
+                                    )
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    FeedbackTypeDropdown(
+                                        selected = state.type,
+                                        onSelect = { viewModel.onEvent(FeedbackEvent.UpdateType(it)) },
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                OutlinedTextField(
+                                    value = state.message,
+                                    onValueChange = { viewModel.onEvent(FeedbackEvent.UpdateMessage(it)) },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(120.dp),
+                                    singleLine = false,
+                                    label = {
+                                        Text(
+                                            text = "Сообщение",
+                                            color = colorResource(R.color.purple)
+                                        )
+                                    },
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = colorResource(R.color.purple),
+                                        unfocusedBorderColor = colorResource(R.color.purple),
+                                        focusedLabelColor = colorResource(R.color.purple),
+                                        unfocusedLabelColor = colorResource(R.color.purple)
+                                    ),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
                         Button(
                             onClick = { viewModel.onEvent(FeedbackEvent.Submit) },
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(bottom = 20.dp)
                                 .height(48.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = colorResource(R.color.darkpurple)
@@ -236,7 +246,7 @@ private fun FeedbackFormScreen(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium
                             )
-                    }
+                        }
                     }
                 }
             }
@@ -295,7 +305,6 @@ private fun FeedbackSuccessScreen(navController: NavController) {
                     )
                 }
 
-                // Логотип справа
                 Image(
                     painter = painterResource(id = R.drawable.logo_home),
                     contentDescription = "Логотип",
@@ -329,7 +338,6 @@ private fun FeedbackSuccessScreen(navController: NavController) {
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
 
-                    // Иконка успеха
                     Image(
                         painter = painterResource(id = R.drawable.ic_arrow_drop_down),
                         contentDescription = "Успех",
@@ -338,7 +346,6 @@ private fun FeedbackSuccessScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Сообщение об успехе
                     Text(
                         text = "Ваше обращение было успешно создано и отправлено!",
                         fontSize = 18.sp,
@@ -401,11 +408,11 @@ private fun FeedbackTypeDropdown(
     fun getDisplayName(type: String): String {
         return when(type) {
             "complaint" -> "Жалоба"
-            "suggestion" -> "Предложение"
+            "suggestion" -> "Пожелания"
             "inquiry" -> "Вопрос"
-            "praise" -> "Благодарность"
+            "praise" -> "Похвала"
             "issue" -> "Проблема"
-            "request" -> "Запрос"
+            "request" -> "Заявка"
             "feedback" -> "Отзыв"
             else -> type
         }
@@ -414,7 +421,7 @@ private fun FeedbackTypeDropdown(
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
-        modifier = modifier
+        modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
             value = getDisplayName(currentSelected),
@@ -423,14 +430,19 @@ private fun FeedbackTypeDropdown(
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium
+            ),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = colorResource(R.color.purple),
-                unfocusedBorderColor = colorResource(R.color.purple),
+                focusedBorderColor = colorResource(R.color.darkpurple),
+                unfocusedBorderColor = colorResource(R.color.darkpurple),
                 focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
+                unfocusedContainerColor = colorResource(R.color.darkpurple),
+                unfocusedTextColor = Color.White,
                 disabledContainerColor = Color.White
             ),
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .menuAnchor()
@@ -473,9 +485,13 @@ fun FeedbackTextField(
         label = { Text(label, color = colorResource(R.color.purple)) },
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp),
+            .height(55.dp),
         singleLine = singleLine,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
+        textStyle = LocalTextStyle.current.copy(
+            fontSize = 15.sp,
+            lineHeight = 15.sp
+        ),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = colorResource(R.color.darkpurple),
             unfocusedBorderColor = colorResource(R.color.darkpurple),

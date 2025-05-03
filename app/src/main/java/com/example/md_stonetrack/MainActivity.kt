@@ -4,7 +4,6 @@ import MdStoneTrackTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -12,12 +11,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.example.md_stonetrack.presentation.client.about_us_screen.AboutUsView
 import com.example.md_stonetrack.presentation.client.feedback_screen.FeedbackView
 import com.example.md_stonetrack.presentation.client.history_screen.HistoryView
 import com.example.md_stonetrack.presentation.client.order_detail_screen.OrderDetailView
 import com.example.md_stonetrack.presentation.client.order_screen.OrderView
 import com.example.md_stonetrack.presentation.client.profile_screen.ProfileView
-import com.example.md_stonetrack.presentation.client.profile_screen.ProfileViewModel
 import com.example.md_stonetrack.presentation.register_screen.RegistrationView
 import com.example.md_stonetrack.presentation.sign_in_screen.SignInView
 import com.example.md_stonetrack.presentation.splash_screen.SplashView
@@ -108,17 +107,11 @@ fun NavGraphBuilder.ordersGraph(navController: NavHostController) {
             FeedbackView(navController = navController)
         }
 
-        // Новый экран профиля
         composable("profile_screen") {
-            val viewModel: ProfileViewModel = koinViewModel()
-            ProfileView(
-                viewModel = viewModel,
-                onLogoutSuccess = {
-                    navController.navigate("auth_graph") {
-                        popUpTo("orders_graph") { inclusive = true }
-                    }
-                }
-            )
+            ProfileView(navController)
+        }
+        composable("about_us_screen") {
+            AboutUsView(navController)
         }
     }
 }

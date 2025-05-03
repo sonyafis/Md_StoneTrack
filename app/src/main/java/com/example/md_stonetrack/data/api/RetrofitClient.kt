@@ -32,7 +32,7 @@ object RetrofitClient {
             runBlocking {
                 tokenMutex.withLock {
                     authRepository.getRefreshToken()?.let { refreshToken ->
-                        println("Attempting token refresh...") // Логируем попытку
+                        println("Attempting token refresh...")
                         authRepository.refreshTokens(refreshToken)
                             .onSuccess {
                                 println("Token refreshed successfully")

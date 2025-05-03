@@ -67,14 +67,12 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
         )
     }
 
-    // Отслеживаем состояние истекшей сессии
     LaunchedEffect(state) {
         if (state is OrderState.SessionExpired) {
             showSessionExpiredDialog = true
         }
     }
 
-    // Диалог истекшей сессии
     if (showSessionExpiredDialog) {
         AlertDialog(
             onDismissRequest = { showSessionExpiredDialog = false },
@@ -110,14 +108,13 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.purple)) // Фон на весь экран
+            .background(colorResource(id = R.color.purple))
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 80.dp) // Оставляем место под BottomNavigation
+                .padding(bottom = 80.dp)
         ) {
-            // Шапка
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -139,7 +136,6 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Белый контейнер поверх фона
             Surface(
                 shape = RoundedCornerShape(32.dp),
                 tonalElevation = 4.dp,
@@ -150,7 +146,6 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
                     .fillMaxHeight(0.95f)
             ) {
                 Column {
-                    // Заголовок
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -259,12 +254,11 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
             }
         }
 
-        // Нижняя навигация на фоне
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 16.dp)
-                .background(colorResource(id = R.color.purple)) // Обеспечиваем фон
+                .background(colorResource(id = R.color.purple))
         ) {
             BottomNavigationBar(navController, selected = "orders_screen")
         }

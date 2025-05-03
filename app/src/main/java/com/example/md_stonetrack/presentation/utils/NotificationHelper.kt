@@ -4,59 +4,72 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.media.AudioAttributes
+import android.os.Build
 import android.util.Log
+import androidx.compose.ui.graphics.Color
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.example.md_stonetrack.R
+import kotlin.math.absoluteValue
 
 class NotificationHelper(private val context: Context) {
 
-    private val channelId = "orders_channel_id"
-    private val notificationId = 1
+    companion object {
+        private const val CHANNEL_ID = "orders_channel_id"
+        private const val CHANNEL_NAME = "Обновления заказов"
+        private const val CHANNEL_DESC = "Уведомления об изменении статуса заказа"
+        private val VIBRATION_PATTERN = longArrayOf(0, 300, 200, 300)
+    }
+
+    private val notificationManager: NotificationManager? by lazy {
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+    }
 
     init {
         createNotificationChannel()
     }
 
     private fun createNotificationChannel() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            val vibrationPattern = longArrayOf(0, 300, 200, 300)
-            val attributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                channelId,
-                "Обновления заказов",
+                CHANNEL_ID,
+                CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Уведомления об изменении статуса заказа"
+                description = CHANNEL_DESC
                 enableVibration(true)
-                setVibrationPattern(vibrationPattern)
-                setSound(null, attributes) // можно убрать звук
+                vibrationPattern = VIBRATION_PATTERN
+                setSound(null, null)
+                enableLights(true)
             }
 
-            val manager = getSystemService(context, NotificationManager::class.java)
-            manager?.createNotificationChannel(channel)
+            notificationManager?.createNotificationChannel(channel)
         }
     }
 
-    fun showStatusChangeNotification(orderNumber: String) {
+    fun showStatusChangeNotification(orderNumber: String, newStatus: String) {
         try {
-            val notification = NotificationCompat.Builder(context, channelId)
+            val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_order_notification)
-                .setContentTitle("Статус изменён")
-                .setContentText("Заказ №$orderNumber обновлён")
+                .setContentTitle("Статус заказа изменён")
+                .setContentText("Заказ №$orderNumber: $newStatus")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setVibrate(longArrayOf(0, 300, 200, 300))
+                .setVibrate(VIBRATION_PATTERN)
                 .setAutoCancel(true)
+                .setOnlyAlertOnce(true) // Важно: не дублировать звук/вибрацию
+                .setCategory(NotificationCompat.CATEGORY_STATUS)
                 .build()
 
-            val manager = context.getSystemService(NotificationManager::class.java)
-            manager?.notify(orderNumber.hashCode(), notification) // 👈 Уникальный ID для каждого заказа
+            val notificationId = generateNotificationId(orderNumber)
+            notificationManager?.notify(notificationId, notification)
 
             Log.d("Notification", "Уведомление показано для заказа $orderNumber")
         } catch (e: Exception) {
             Log.e("Notification", "Ошибка показа уведомления", e)
         }
+    }
+
+    private fun generateNotificationId(orderNumber: String): Int {
+        return orderNumber.hashCode().absoluteValue // Избегаем отрицательных ID
     }
 }

@@ -1,5 +1,6 @@
 package com.example.md_stonetrack.presentation.client.order_screen
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,6 +12,7 @@ import com.example.md_stonetrack.domain.usecase.GetOrdersUseCase
 import com.example.md_stonetrack.domain.usecase.LogoutUseCase
 import com.example.md_stonetrack.domain.usecase.SessionExpiredException
 import com.example.md_stonetrack.presentation.utils.NotificationHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,15 +36,32 @@ class OrderViewModel(
     private var lastOrders: List<Order> = emptyList()
 
     private fun checkForStatusChanges(newOrders: List<Order>) {
-        if (lastOrders.isEmpty()) return
+        if (lastOrders.isEmpty()) {
+            Log.d("StatusCheck", "No previous orders to compare with")
+            return
+        }
 
         newOrders.forEach { newOrder ->
-            lastOrders.find { it.id_order == newOrder.id_order }?.let { oldOrder ->
+            lastOrders.firstOrNull { it.id_order == newOrder.id_order }?.let { oldOrder ->
                 if (oldOrder.id_status.status_name != newOrder.id_status.status_name) {
-                    viewModelScope.launch {
-                        notificationHelper.showStatusChangeNotification(newOrder.order_number)
+                    Log.i("StatusChange",
+                        "Status changed for order ${newOrder.order_number}: " +
+                                "${oldOrder.id_status.status_name} -> ${newOrder.id_status.status_name}")
+
+                    viewModelScope.launch(Dispatchers.IO) {
+                        try {
+                            notificationHelper.showStatusChangeNotification(
+                                orderNumber = newOrder.order_number,
+                                newStatus = newOrder.id_status.status_name // Добавляем новый статус
+                            )
+                        } catch (e: Exception) {
+                            Log.e("NotificationError",
+                                "Failed to show notification for order ${newOrder.order_number}", e)
+                        }
                     }
                 }
+            } ?: run {
+                Log.d("NewOrder", "New order detected: ${newOrder.order_number}")
             }
         }
     }
@@ -73,7 +92,7 @@ class OrderViewModel(
     private fun startPolling() = viewModelScope.launch {
         while (isPollingActive) {
             loadOrders()
-            delay(10000)
+            delay(15000)
         }
     }
 
