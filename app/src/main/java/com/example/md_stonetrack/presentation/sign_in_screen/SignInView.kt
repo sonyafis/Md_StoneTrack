@@ -1,10 +1,13 @@
 package com.example.md_stonetrack.presentation.sign_in_screen
 
 import AppFontFamily
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -13,9 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -27,6 +35,8 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val uiState by viewModel.uiState.collectAsState()
+    var isTermsAccepted by remember { mutableStateOf(false) }
+    var isTermsTouched by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -37,7 +47,6 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            // Улучшенная кнопка "Назад" с большим размером и отступами
             Row(
                 modifier = Modifier
                     .padding(start = 24.dp, top = 24.dp)
@@ -64,7 +73,6 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Основной белый блок с таким же отступом сверху (40.dp)
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -104,7 +112,6 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                             fontFamily = AppFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 30.sp,
-//                            style = MaterialTheme.typography.headlineLarge,
                             color = Color.Black
                         )
                     }
@@ -161,6 +168,72 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                             .align(Alignment.End)
                             .clickable { /* Обработка */ }
                     )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                isTermsAccepted = !isTermsAccepted
+                                isTermsTouched = true
+                            },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = isTermsAccepted,
+                            onCheckedChange = {
+                                isTermsAccepted = it
+                                isTermsTouched = true
+                            }
+                        )
+                        val context = LocalContext.current
+
+                        val annotatedText = buildAnnotatedString {
+                            append("Я соглашаюсь с ")
+
+                            pushStringAnnotation(
+                                tag = "TOS",
+                                annotation = "https://docs.google.com/document/d/1AKRq43puxtA5UEcm00QrOwjKmgORwuv1OdHRdeXvC98/edit?usp=sharing"
+                            )
+                            withStyle(style = SpanStyle(color = colorResource(id = R.color.darkpurple), fontWeight = FontWeight.Bold)) {
+                                append("пользовательским соглашением")
+                            }
+                            pop()
+
+                            append(" и ")
+
+                            pushStringAnnotation(
+                                tag = "Privacy",
+                                annotation = "https://docs.google.com/document/d/1rkNeE6-mZqJFvMPk8E_gcYLYOGSJt5oQZr0-PZa5CAs/edit?usp=sharing"
+                            )
+                            withStyle(style = SpanStyle(color = colorResource(id = R.color.darkpurple), fontWeight = FontWeight.Bold)) {
+                                append("политикой конфиденциальности")
+                            }
+                            pop()
+                        }
+
+                        ClickableText(
+                            text = annotatedText,
+                            style = TextStyle(fontSize = 13.sp, fontFamily = AppFontFamily),
+                            modifier = Modifier.padding(start = 8.dp),
+                            onClick = { offset ->
+                                annotatedText.getStringAnnotations(start = offset, end = offset)
+                                    .firstOrNull()?.let { annotation ->
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                        context.startActivity(intent)
+                                    }
+                            }
+                        )
+                    }
+                    if (!isTermsAccepted && isTermsTouched) {
+                        Text(
+                            text = "Вы должны принять условия соглашения",
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(start = 16.dp, top = 2.dp)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(24.dp))
 

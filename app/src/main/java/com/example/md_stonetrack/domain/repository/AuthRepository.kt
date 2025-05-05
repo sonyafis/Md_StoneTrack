@@ -16,4 +16,5 @@ interface AuthRepository {
     suspend fun deleteAccount(): Boolean
     suspend fun saveUserId(userId: Int)
     suspend fun getCurrentUserId(): Int?
+    suspend fun changePassword(token: String, current_password: String, new_password: String, re_new_password: String): Result<Unit>
 }

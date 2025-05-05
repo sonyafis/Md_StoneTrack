@@ -12,6 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.md_stonetrack.presentation.client.about_us_screen.AboutUsView
+import com.example.md_stonetrack.presentation.client.account_settings_screen.AccountSettingsView
+import com.example.md_stonetrack.presentation.client.change_password.ChangePasswordView
 import com.example.md_stonetrack.presentation.client.feedback_screen.FeedbackView
 import com.example.md_stonetrack.presentation.client.history_screen.HistoryView
 import com.example.md_stonetrack.presentation.client.order_detail_screen.OrderDetailView
@@ -27,7 +29,6 @@ import com.example.md_stonetrack.presentation.courier.courier_history_detail_scr
 import com.example.md_stonetrack.presentation.courier.courier_history_screen.CourierHistoryView
 import com.example.md_stonetrack.presentation.courier.courier_order_detail_screen.CourierOrderDetailView
 import com.example.md_stonetrack.presentation.courier.courier_order_screen.CourierView
-import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +114,12 @@ fun NavGraphBuilder.ordersGraph(navController: NavHostController) {
         }
         composable("about_us_screen") {
             AboutUsView(navController)
+        }
+        composable("account_settings_screen") {
+            AccountSettingsView(navController)
+        }
+        composable("change_password_screen") {
+            ChangePasswordView(navController)
         }
     }
 }

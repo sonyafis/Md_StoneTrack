@@ -42,7 +42,6 @@ class RegistrationViewModel(
         viewModelScope.launch {
             _uiState.value = RegistrationUiState.Loading
 
-            // Проверка существования username
             if (checkUsernameExistsUseCase(username)) {
                 _uiState.value = RegistrationUiState.Error("Username already exists")
                 return@launch

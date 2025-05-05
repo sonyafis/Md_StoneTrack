@@ -14,6 +14,7 @@ import com.example.md_stonetrack.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.md_stonetrack.data.model.ChangePasswordRequest
 import com.example.md_stonetrack.data.model.RefreshTokenRequest
 import com.example.md_stonetrack.data.security.CryptoManager
 import kotlinx.coroutines.flow.firstOrNull
@@ -196,5 +197,23 @@ class AuthRepositoryImpl(
         val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
         val REFRESH_TOKEN_KEY = stringPreferencesKey("refresh_token")
         val USER_ID_KEY = intPreferencesKey("user_id")
+    }
+
+    override suspend fun changePassword(
+        token: String,
+        current_password: String,
+        new_password: String,
+        re_new_password: String
+    ): Result<Unit> {
+        return try {
+            val response = apiService.changePassword(
+                token = "Bearer $token",
+                request = ChangePasswordRequest(current_password, new_password, re_new_password)
+            )
+            if (response.isSuccessful) Result.success(Unit)
+            else Result.failure(Exception("Ошибка: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.example.md_stonetrack.presentation.register_screen
 
 import AppFontFamily
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.background
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -43,10 +46,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -66,7 +74,7 @@ fun RegistrationView(
     var last_name by remember { mutableStateOf("") }
     var phone_number by remember { mutableStateOf("") }
 
-    // Дополнительное состояние для отслеживания, был ли выполнен ввод в поле
+
     var isUsernameTouched by remember { mutableStateOf(false) }
     var isEmailTouched by remember { mutableStateOf(false) }
     var isPasswordTouched by remember { mutableStateOf(false) }
@@ -74,6 +82,8 @@ fun RegistrationView(
     var isFirstNameTouched by remember { mutableStateOf(false) }
     var isLastNameTouched by remember { mutableStateOf(false) }
     var isPhoneNumberTouched by remember { mutableStateOf(false) }
+    var isTermsAccepted by remember { mutableStateOf(false) }
+    var isTermsTouched by remember { mutableStateOf(false) }
 
     var usernameError by remember { mutableStateOf<String?>(null) }
     var emailError by remember { mutableStateOf<String?>(null) }
@@ -118,7 +128,6 @@ fun RegistrationView(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            // Кнопка "Назад" (как в экране входа)
             Row(
                 modifier = Modifier
                     .padding(start = 20.dp, top = 20.dp)
@@ -159,7 +168,6 @@ fun RegistrationView(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
-                    // Логотип (точный размер как на экране входа)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
@@ -176,7 +184,6 @@ fun RegistrationView(
                                 fontFamily = AppFontFamily,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 30.sp,
-//                                style = MaterialTheme.typography.headlineLarge,
                                 color = Color.White
                             )
                         }
@@ -186,14 +193,12 @@ fun RegistrationView(
                             fontFamily = AppFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 30.sp,
-//                            style = MaterialTheme.typography.headlineLarge,
                             color = Color.Black
                         )
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Заголовок (как в экране входа, но для регистрации)
                     Text(
                         text = "Регистрация",
                         fontFamily = AppFontFamily,
@@ -204,7 +209,6 @@ fun RegistrationView(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Поля формы с такими же стилями как в экране входа
                     Column(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
@@ -271,10 +275,77 @@ fun RegistrationView(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // Кнопка (как в экране входа)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                isTermsAccepted = !isTermsAccepted
+                                isTermsTouched = true
+                            },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        androidx.compose.material3.Checkbox(
+                            checked = isTermsAccepted,
+                            onCheckedChange = {
+                                isTermsAccepted = it
+                                isTermsTouched = true
+                            }
+                        )
+                        val context = LocalContext.current
+
+                        val annotatedText = buildAnnotatedString {
+                            append("Я соглашаюсь с ")
+
+                            pushStringAnnotation(
+                                tag = "TOS",
+                                annotation = "https://docs.google.com/document/d/1AKRq43puxtA5UEcm00QrOwjKmgORwuv1OdHRdeXvC98/edit?usp=sharing"
+                            )
+                            withStyle(style = SpanStyle(color = colorResource(id = R.color.darkpurple), fontWeight = FontWeight.Bold)) {
+                                append("пользовательским соглашением")
+                            }
+                            pop()
+
+                            append(" и ")
+
+                            pushStringAnnotation(
+                                tag = "Privacy",
+                                annotation = "https://docs.google.com/document/d/1rkNeE6-mZqJFvMPk8E_gcYLYOGSJt5oQZr0-PZa5CAs/edit?usp=sharing"
+                            )
+                            withStyle(style = SpanStyle(color = colorResource(id = R.color.darkpurple), fontWeight = FontWeight.Bold)) {
+                                append("политикой конфиденциальности")
+                            }
+                            pop()
+                        }
+
+                        ClickableText(
+                            text = annotatedText,
+                            style = TextStyle(fontSize = 13.sp, fontFamily = AppFontFamily),
+                            modifier = Modifier.padding(start = 8.dp),
+                            onClick = { offset ->
+                                annotatedText.getStringAnnotations(start = offset, end = offset)
+                                    .firstOrNull()?.let { annotation ->
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                        context.startActivity(intent)
+                                    }
+                            }
+                        )
+                    }
+                    if (!isTermsAccepted && isTermsTouched) {
+                        Text(
+                            text = "Вы должны принять условия соглашения",
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(start = 16.dp, top = 2.dp)
+                        )
+                    }
+
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
                     Button(
                         onClick = {
-                            if (validationResult.isValid) {
+                            isTermsTouched = true
+                            if (validationResult.isValid && isTermsAccepted) {
                                 viewModel.registerUser(
                                     username = username,
                                     email = email,
@@ -303,7 +374,6 @@ fun RegistrationView(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Ссылка на вход (аналогично "Забыли пароль" в экране входа)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
@@ -323,15 +393,12 @@ fun RegistrationView(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.clickable {
                                 navController.navigate("signin") {
-                                    // Опциональные параметры навигации
                                     popUpTo("registration_screen") { inclusive = true } // Закрыть текущий экран
                                     launchSingleTop = true // Не создавать дубликаты экрана
                                 }
                             }
                         )
                     }
-
-                    // Обработка состояний
                     when (val state = uiState) {
                         is RegistrationViewModel.RegistrationUiState.Loading -> {
                             CircularProgressIndicator()
@@ -366,7 +433,6 @@ private fun RegistrationTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     onTouched: () -> Unit = {}
 ) {
-    // Создаем переменную для отслеживания фокуса на поле
     var isFieldTouched by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -401,7 +467,6 @@ private fun RegistrationTextField(
             ),
             singleLine = true
         )
-        // Показываем сообщение об ошибке только если поле было тронуто
         if (isFieldTouched && errorMessage != null) {
             Text(
                 text = errorMessage,

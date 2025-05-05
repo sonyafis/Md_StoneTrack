@@ -1,14 +1,20 @@
 package com.example.md_stonetrack.presentation.client.profile_screen
 
 import AppFontFamily
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -24,10 +30,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -50,7 +61,7 @@ fun ProfileView(
                 viewModel.resetNavigationEvent()
             }
             is ProfileViewModel.ProfileEvent.NavigateToSettings -> {
-                navController.navigate("")
+                navController.navigate("account_settings_screen")
                 viewModel.resetNavigationEvent()
             }
             is ProfileViewModel.ProfileEvent.Logout -> {
@@ -126,6 +137,7 @@ private fun ProfileContent(
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     if (showLogoutDialog) {
         AlertDialog(
@@ -252,11 +264,11 @@ private fun ProfileContent(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(36.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     Box(
                         modifier = Modifier
-                            .size(100.dp)
+                            .size(90.dp)
                             .background(
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
@@ -287,14 +299,15 @@ private fun ProfileContent(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Medium,
                         color = colorResource(id = R.color.black),
-                        modifier = Modifier.padding(top = 36.dp)
+                        modifier = Modifier.padding(top = 20.dp)
                     )
 
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 16.dp)
+                        .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -317,6 +330,18 @@ private fun ProfileContent(
                             text = "Удалить аккаунт",
                             onClick = { showDeleteDialog = true },
                             textColor = colorResource(id = R.color.darkpurple)
+                        )
+
+                        DocumentLink(
+                            text = "Политика конфиденциальности",
+                            url = "https://docs.google.com/document/d/1rkNeE6-mZqJFvMPk8E_gcYLYOGSJt5oQZr0-PZa5CAs/edit?usp=sharing",
+                            context = context
+                        )
+
+                        DocumentLink(
+                            text = "Пользовательское соглашение",
+                            url = "https://docs.google.com/document/d/1AKRq43puxtA5UEcm00QrOwjKmgORwuv1OdHRdeXvC98/edit?usp=sharing",
+                            context = context
                         )
                     }
                 }
@@ -366,4 +391,32 @@ fun ProfileMenuItem(
             )
         }
     }
+}
+
+@Composable
+fun DocumentLink(text: String, url: String, context: Context) {
+    Text(
+        text = buildAnnotatedString {
+            withStyle(
+                style = SpanStyle(
+                    textDecoration = TextDecoration.Underline,
+                    color = colorResource(id = R.color.darkpurple)
+                )
+            ) {
+                append(text)
+            }
+        },
+        fontSize = 16.sp,
+        fontFamily = AppFontFamily,
+        modifier = Modifier
+            .clickable {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Не удалось открыть ссылку", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .padding(vertical = 8.dp)
+    )
 }

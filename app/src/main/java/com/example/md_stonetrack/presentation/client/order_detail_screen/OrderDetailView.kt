@@ -78,7 +78,6 @@ fun OrderDetailView(
                 .padding(bottom = 80.dp)
         ) {
 
-            // Шапка экрана
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,7 +85,6 @@ fun OrderDetailView(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Кнопка "Назад" слева
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable { navController.popBackStack() }
@@ -107,7 +105,6 @@ fun OrderDetailView(
                     )
                 }
 
-                // Логотип справа
                 Image(
                     painter = painterResource(id = R.drawable.logo_home),
                     contentDescription = "Логотип",
@@ -145,7 +142,6 @@ fun OrderDetailView(
                                 .padding(24.dp)
                                 .verticalScroll(rememberScrollState())
                         ) {
-                            // Заголовок с номером заказа
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -173,14 +169,13 @@ fun OrderDetailView(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 20.dp)
-                                    .align(Alignment.CenterHorizontally) // Центрируем рамку
+                                    .align(Alignment.CenterHorizontally)
                             ) {
                                 Column(
-                                    verticalArrangement = Arrangement.spacedBy(20.dp), // Добавим отступы между блоками
+                                    verticalArrangement = Arrangement.spacedBy(20.dp),
                                     modifier = Modifier
-                                        .padding(20.dp) // Увеличим внутренние отступы
+                                        .padding(20.dp)
                                 ) {
-                                    // Адрес
                                     Text(
                                         text = "Адрес: ${order?.address ?: "Нет данных"}",
                                         fontSize = 16.sp,
@@ -188,7 +183,6 @@ fun OrderDetailView(
                                         color = Color.Black
                                     )
 
-                                    // Дата создания
                                     Text(
                                         text = "Создан: ${DateFormatter.formatDateTime(order?.created_at ?: "Нет данных")}",
                                         fontSize = 16.sp,
@@ -196,7 +190,6 @@ fun OrderDetailView(
                                         color = Color.Black
                                     )
 
-                                    // Статус
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
@@ -225,23 +218,20 @@ fun OrderDetailView(
                                         }
                                     }
 
-                                    // Курьер
                                     Text(
-                                        text = "Курьер: ${order?.id_courier?.let { "${it.first_name} ${it.last_name}" } ?: "Не назначен"}",
+                                        text = "Назначенный курьер: ${order?.id_courier?.let { "${it.first_name} ${it.last_name}" } ?: "Не назначен"}",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Medium,
                                         color = Color.Black
                                     )
 
-                                    // Телефон курьера
                                     Text(
-                                        text = "Телефон курьера: ${order?.id_courier?.phone_number ?: "Нет данных"}",
+                                        text = "Номер курьера для связи: ${order?.id_courier?.phone_number ?: "Нет данных"}",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Medium,
                                         color = Color.Black
                                     )
 
-                                    // Описание
                                     Text(
                                         text = "Описание:",
                                         fontSize = 16.sp,
@@ -262,12 +252,11 @@ fun OrderDetailView(
             }
         }
 
-        // Нижняя навигация на фоне
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 16.dp)
-                .background(colorResource(id = R.color.purple)) // Обеспечиваем фон
+                .background(colorResource(id = R.color.purple))
         ) {
             BottomNavigationBar(navController, selected = "orders_screen")
         }

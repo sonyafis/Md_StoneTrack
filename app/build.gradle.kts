@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.md_stonetrack"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -43,6 +43,7 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
 }
 
 dependencies {

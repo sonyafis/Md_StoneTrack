@@ -49,9 +49,7 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            // Разрешение получено
         } else {
-            // Пользователь отказал
         }
     }
     var showSessionExpiredDialog by remember { mutableStateOf(false) }
@@ -246,7 +244,6 @@ fun OrderView(navController: NavController, viewModel: OrderViewModel = koinView
                         }
 
                         is OrderState.SessionExpired -> {
-                            // Пустой контейнер, так как диалог уже показан
                             Box(Modifier.fillMaxSize())
                         }
                     }
@@ -282,7 +279,6 @@ fun OrderCard(order: Order, onClick: () -> Unit) {
         Column(
             modifier = Modifier.padding(12.dp)
         ) {
-            // Номер заказа как заголовок
             Text(
                 text = "Заказ №${order.order_number}",
                 fontSize = 15.sp,
@@ -293,7 +289,6 @@ fun OrderCard(order: Order, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(2.dp))
 
-            // Разделитель
             Divider(
                 color = Color.LightGray,
                 thickness = 3.dp,
@@ -304,7 +299,6 @@ fun OrderCard(order: Order, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Информация о заказе
             Text(
                 text = "Адрес: ${order.address}",
                 fontSize = 13.sp,
@@ -323,12 +317,10 @@ fun OrderCard(order: Order, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Замените текущий Text со статусом на этот код
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(top = 4.dp)
             ) {
-                // Надпись "Статус" (обычный текст)
                 Text(
                     text = "Статус:",
                     fontSize = 13.sp,
@@ -338,7 +330,6 @@ fun OrderCard(order: Order, onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.width(4.dp))
 
-                // Сам статус с фоном
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(30.dp))
@@ -350,7 +341,7 @@ fun OrderCard(order: Order, onClick: () -> Unit) {
                         fontSize = 13.sp,
                         fontFamily = AppFontFamily,
                         fontWeight = FontWeight.Medium,
-                        color = Color.White // Цвет текста на фоне
+                        color = Color.White
                     )
                 }
             }

@@ -2,6 +2,7 @@ package com.example.md_stonetrack.data.api
 
 import com.example.md_stonetrack.data.model.AuthRequest
 import com.example.md_stonetrack.data.model.AuthResponse
+import com.example.md_stonetrack.data.model.ChangePasswordRequest
 import com.example.md_stonetrack.data.model.FeedbackDTO
 import com.example.md_stonetrack.data.model.OrderDTO
 import com.example.md_stonetrack.data.model.RefreshTokenRequest
@@ -51,4 +52,10 @@ interface ApiService {
     suspend fun deleteAccount(
         @Header("Authorization") token: String
     ): Response<Unit>
+    @POST("auth/users/set_password/")
+    suspend fun changePassword(
+        @Header("Authorization") token: String,
+        @Body request: ChangePasswordRequest
+    ): Response<Unit>
+
 }

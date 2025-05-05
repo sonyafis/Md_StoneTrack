@@ -1,5 +1,6 @@
 package com.example.md_stonetrack.di
 
+import com.example.md_stonetrack.domain.usecase.ChangePasswordUseCase
 import com.example.md_stonetrack.domain.usecase.CheckAuthUseCase
 import com.example.md_stonetrack.domain.usecase.CheckUsernameExistsUseCase
 import com.example.md_stonetrack.domain.usecase.DeleteAccountUseCase
@@ -13,6 +14,8 @@ import com.example.md_stonetrack.domain.usecase.RegisterUseCase
 import com.example.md_stonetrack.domain.usecase.SendFeedbackUseCase
 import com.example.md_stonetrack.domain.usecase.UpdateOrderStatusUseCase
 import com.example.md_stonetrack.domain.usecase.ValidateRegistrationFieldsUseCase
+import com.example.md_stonetrack.presentation.client.account_settings_screen.AccountSettingsViewModel
+import com.example.md_stonetrack.presentation.client.change_password.ChangePasswordViewModel
 import com.example.md_stonetrack.presentation.client.feedback_screen.FeedbackViewModel
 import com.example.md_stonetrack.presentation.client.history_detail_screen.HistoryDetailViewModel
 import com.example.md_stonetrack.presentation.client.history_screen.HistoryViewModel
@@ -48,6 +51,8 @@ val presentationModule = module {
     viewModel { CourierHistoryViewModel(get(), get(), get()) }
     viewModel { FeedbackViewModel(get(), get(), get(), get())}
     viewModel { CourierFeedbackViewModel(get(), get(), get(), get())}
+    viewModel { AccountSettingsViewModel(get())}
+    viewModel { ChangePasswordViewModel(get(), get())}
 
     // UseCase
     factory { LoginUseCase(get()) }
@@ -63,6 +68,7 @@ val presentationModule = module {
     single { UpdateOrderStatusUseCase(get()) }
     single { DeleteAccountUseCase(get()) }
     single { GetAccessTokenUseCase(get()) }
+    single { ChangePasswordUseCase(get()) }
 
     single { NotificationHelper(androidContext()) }
 }

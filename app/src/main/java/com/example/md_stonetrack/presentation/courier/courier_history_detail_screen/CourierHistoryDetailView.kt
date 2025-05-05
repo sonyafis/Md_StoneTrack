@@ -87,7 +87,6 @@ fun CourierHistoryDetailView(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Кнопка "Назад" слева
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable { navController.popBackStack() }
@@ -108,7 +107,6 @@ fun CourierHistoryDetailView(
                     )
                 }
 
-                // Логотип справа
                 Image(
                     painter = painterResource(id = R.drawable.logo_home),
                     contentDescription = "Логотип",
@@ -146,7 +144,6 @@ fun CourierHistoryDetailView(
                                 .padding(24.dp)
                                 .verticalScroll(rememberScrollState())
                         ) {
-                            // Заголовок с номером заказа
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -174,14 +171,13 @@ fun CourierHistoryDetailView(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 20.dp)
-                                    .align(Alignment.CenterHorizontally) // Центрируем рамку
+                                    .align(Alignment.CenterHorizontally)
                             ) {
                                 Column(
-                                    verticalArrangement = Arrangement.spacedBy(20.dp), // Добавим отступы между блоками
+                                    verticalArrangement = Arrangement.spacedBy(20.dp),
                                     modifier = Modifier
-                                        .padding(20.dp) // Увеличим внутренние отступы
+                                        .padding(20.dp)
                                 ) {
-                                    // Адрес
                                     Text(
                                         text = "Адрес: ${order?.address ?: "Нет данных"}",
                                         fontSize = 16.sp,
@@ -189,7 +185,6 @@ fun CourierHistoryDetailView(
                                         color = Color.Black
                                     )
 
-                                    // Дата создания
                                     Text(
                                         text = "Создан: ${DateFormatter.formatDateTime(order?.created_at ?: "Нет данных")}",
                                         fontSize = 16.sp,
@@ -197,7 +192,6 @@ fun CourierHistoryDetailView(
                                         color = Color.Black
                                     )
 
-                                    // Статус
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
@@ -226,23 +220,20 @@ fun CourierHistoryDetailView(
                                         }
                                     }
 
-                                    // Курьер
                                     Text(
-                                        text = "Клиент: ${order?.id_client?.let { "${it.first_name} ${it.last_name}" } ?: "Не назначен"}",
+                                        text = "Заказчик: ${order?.id_client?.let { "${it.first_name} ${it.last_name}" } ?: "Не назначен"}",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Medium,
                                         color = Color.Black
                                     )
 
-                                    // Телефон курьера
                                     Text(
-                                        text = "Телефон клиента: ${order?.id_client?.phone_number ?: "Нет данных"}",
+                                        text = "Номер заказчика для связи: ${order?.id_client?.phone_number ?: "Нет данных"}",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Medium,
                                         color = Color.Black
                                     )
 
-                                    // Описание
                                     Text(
                                         text = "Описание:",
                                         fontSize = 16.sp,
@@ -263,6 +254,23 @@ fun CourierHistoryDetailView(
                                             modifier = Modifier.padding(top = 8.dp)
                                         )
                                     }
+                                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                                        Surface(
+                                            shape = RoundedCornerShape(50),
+                                            color = Color.Gray,
+                                            modifier = Modifier
+                                                .clickable { }
+                                                .padding(horizontal = 32.dp)
+                                        ) {
+                                            Text(
+                                                text = "Подтвердить доставку",
+                                                fontSize = 16.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color.White,
+                                                modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+                                            )
+                                        }
+                                    }
                                 }
                             }
 
@@ -272,12 +280,11 @@ fun CourierHistoryDetailView(
             }
         }
 
-        // Нижняя навигация на фоне
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 16.dp)
-                .background(colorResource(id = R.color.purple)) // Обеспечиваем фон
+                .background(colorResource(id = R.color.purple))
         ) {
             BottomNavigationBarCourier(navController, selected = "courier_history_screen")
         }
