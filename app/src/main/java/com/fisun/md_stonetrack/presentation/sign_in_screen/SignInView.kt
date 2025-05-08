@@ -256,9 +256,17 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Button(
-                        onClick = { viewModel.login(username, password) },
+                        onClick = {
+                            isTermsTouched = true
+                            if (isTermsAccepted) {
+                                viewModel.login(username, password)
+                            } },
                         shape = RoundedCornerShape(50),
-                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.darkpurple)),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(id = R.color.darkpurple),
+                            disabledContainerColor = Color.Gray
+                        ),
+                        enabled = isTermsAccepted,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(54.dp)

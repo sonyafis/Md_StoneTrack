@@ -24,6 +24,8 @@ import com.fisun.md_stonetrack.presentation.sign_in_screen.SignInView
 import com.fisun.md_stonetrack.presentation.splash_screen.SplashView
 import com.fisun.md_stonetrack.presentation.start_screen.StartView
 import com.fisun.md_stonetrack.presentation.client.history_detail_screen.HistoryDetailView
+import com.fisun.md_stonetrack.presentation.courier.courier_account_settings_screen.CourierAccountSettingsView
+import com.fisun.md_stonetrack.presentation.courier.courier_change_password.CourierChangePasswordView
 import com.fisun.md_stonetrack.presentation.courier.courier_feedback_screen.CourierFeedbackView
 import com.fisun.md_stonetrack.presentation.courier.courier_history_detail_screen.CourierHistoryDetailView
 import com.fisun.md_stonetrack.presentation.courier.courier_history_screen.CourierHistoryView
@@ -146,6 +148,12 @@ fun NavGraphBuilder.courierGraph(navController: NavHostController) {
         }
         composable("courier_profile_screen") {
             CourierProfileView(navController)
+        }
+        composable("courier_account_settings_screen") {
+            CourierAccountSettingsView(navController)
+        }
+        composable("courier_change_password_screen") {
+            CourierChangePasswordView(navController)
         }
     }
 }

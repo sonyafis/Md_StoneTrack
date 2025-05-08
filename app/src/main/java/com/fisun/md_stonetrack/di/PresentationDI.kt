@@ -23,6 +23,8 @@ import com.fisun.md_stonetrack.presentation.client.history_screen.HistoryViewMod
 import com.fisun.md_stonetrack.presentation.client.order_detail_screen.OrderDetailViewModel
 import com.fisun.md_stonetrack.presentation.client.order_screen.OrderViewModel
 import com.fisun.md_stonetrack.presentation.client.profile_screen.ProfileViewModel
+import com.fisun.md_stonetrack.presentation.courier.courier_account_settings_screen.CourierAccountSettingsViewModel
+import com.fisun.md_stonetrack.presentation.courier.courier_change_password.CourierChangePasswordViewModel
 import com.fisun.md_stonetrack.presentation.courier.courier_feedback_screen.CourierFeedbackViewModel
 import com.fisun.md_stonetrack.presentation.courier.courier_history_detail_screen.CourierHistoryDetailViewModel
 import com.fisun.md_stonetrack.presentation.courier.courier_history_screen.CourierHistoryViewModel
@@ -55,7 +57,9 @@ val presentationModule = module {
     viewModel { FeedbackViewModel(get(), get(), get(), get())}
     viewModel { CourierFeedbackViewModel(get(), get(), get(), get())}
     viewModel { AccountSettingsViewModel(get())}
+    viewModel { CourierAccountSettingsViewModel(get())}
     viewModel { ChangePasswordViewModel(get(), get())}
+    viewModel { CourierChangePasswordViewModel(get(), get())}
     viewModel { ResetPasswordViewModel(get())}
 
     factory { LoginUseCase(get()) }

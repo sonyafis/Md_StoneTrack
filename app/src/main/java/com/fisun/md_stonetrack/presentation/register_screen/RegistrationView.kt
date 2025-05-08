@@ -359,6 +359,7 @@ fun RegistrationView(
                                 )
                             }
                         },
+                        enabled = validationResult.isValid && isTermsAccepted,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp),
@@ -396,8 +397,8 @@ fun RegistrationView(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.clickable {
                                 navController.navigate("signin") {
-                                    popUpTo("registration_screen") { inclusive = true } // Закрыть текущий экран
-                                    launchSingleTop = true // Не создавать дубликаты экрана
+                                    popUpTo("registration_screen") { inclusive = true }
+                                    launchSingleTop = true
                                 }
                             }
                         )

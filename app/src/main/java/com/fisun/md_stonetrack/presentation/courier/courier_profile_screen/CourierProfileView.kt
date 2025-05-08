@@ -57,7 +57,7 @@ fun CourierProfileView(
     LaunchedEffect(navigationEvent) {
         when (navigationEvent) {
             is CourierProfileViewModel.ProfileEvent.NavigateToSettings -> {
-                navController.navigate("account_settings_screen")
+                navController.navigate("courier_account_settings_screen")
                 viewModel.resetNavigationEvent()
             }
             is CourierProfileViewModel.ProfileEvent.Logout -> {
