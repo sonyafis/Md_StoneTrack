@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.md_stonetrack"
+    namespace = "com.fisun.md_stonetrack"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.md_stonetrack"
+        applicationId = "com.fisun.md_stonetrack"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

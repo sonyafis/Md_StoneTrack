@@ -1,0 +1,412 @@
+package com.fisun.md_stonetrack.presentation.courier.courier_profile_screen
+
+import AppFontFamily
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.fisun.md_stonetrack.R
+import com.fisun.md_stonetrack.presentation.navigation.BottomNavigationBarCourier
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun CourierProfileView(
+    navController: NavController,
+    viewModel: CourierProfileViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
+    val navigationEvent by viewModel.navigationEvent.collectAsState()
+
+    LaunchedEffect(navigationEvent) {
+        when (navigationEvent) {
+            is CourierProfileViewModel.ProfileEvent.NavigateToSettings -> {
+                navController.navigate("account_settings_screen")
+                viewModel.resetNavigationEvent()
+            }
+            is CourierProfileViewModel.ProfileEvent.Logout -> {
+                viewModel.logout()
+                navController.navigate("start_screen") {
+                    popUpTo(0)
+                }
+                viewModel.resetNavigationEvent()
+            }
+            is CourierProfileViewModel.ProfileEvent.DeleteAccount -> {
+                viewModel.deleteAccount()
+                navController.navigate("start_screen") {
+                    popUpTo(0)
+                }
+                viewModel.resetNavigationEvent()
+            }
+            else -> {}
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.purple))
+    ) {
+        when (state) {
+            is CourierProfileViewModel.ProfileState.Loading -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator(color = Color.White)
+                }
+            }
+            is CourierProfileViewModel.ProfileState.Error -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = (state as CourierProfileViewModel.ProfileState.Error).message,
+                        color = Color.White,
+                        fontSize = 18.sp
+                    )
+                }
+            }
+            is CourierProfileViewModel.ProfileState.Success -> {
+                val userName = (state as CourierProfileViewModel.ProfileState.Success).userName
+
+                ProfileContent(
+                    navController = navController,
+                    userName = userName,
+                    onSettingsClick = { viewModel.onEvent(CourierProfileViewModel.ProfileEvent.NavigateToSettings) },
+                    onLogoutClick = { viewModel.onEvent(CourierProfileViewModel.ProfileEvent.Logout) },
+                    onDeleteClick = { viewModel.onEvent(CourierProfileViewModel.ProfileEvent.DeleteAccount) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProfileContent(
+    navController: NavController,
+    userName: String,
+    onSettingsClick: () -> Unit,
+    onLogoutClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Выход из аккаунта") },
+            text = { Text("Вы уверены, что хотите выйти из аккаунта?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showLogoutDialog = false
+                        onLogoutClick()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple))
+                ) {
+                    Text("Выйти")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showLogoutDialog = false }
+                ) {
+                    Text("Отмена")
+                }
+            }
+        )
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Удаление аккаунта") },
+            text = { Text("Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteDialog = false
+                        onDeleteClick()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.red))
+                ) {
+                    Text("Удалить")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteDialog = false }
+                ) {
+                    Text("Отмена")
+                }
+            }
+        )
+    }
+
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(colorResource(id = R.color.purple))) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 80.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { navController.navigate("orders_screen") }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "На главную",
+                        tint = Color.White,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "На главную",
+                        fontFamily = AppFontFamily,
+                        fontSize = 18.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                Image(
+                    painter = painterResource(id = R.drawable.logo_home),
+                    contentDescription = "Логотип",
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Surface(
+                shape = RoundedCornerShape(32.dp),
+                tonalElevation = 4.dp,
+                shadowElevation = 8.dp,
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.95f)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(50))
+                                .background(colorResource(id = R.color.light_gray))
+                                .padding(horizontal = 24.dp, vertical = 8.dp)
+                        ) {
+                            Text(text = "Личный кабинет", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .size(90.dp)
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        colorResource(id = R.color.purple),
+                                        colorResource(id = R.color.darkpurple)
+                                    )
+                                ),
+                                shape = CircleShape
+                            )
+                            .border(
+                                width = 2.dp,
+                                color = colorResource(id = R.color.darkpurple),
+                                shape = CircleShape
+                            )
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = userName.first().toString().uppercase(),
+                            color = Color.White,
+                            fontSize = 48.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Text(
+                        text = "Здравствуйте, $userName!",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colorResource(id = R.color.black),
+                        modifier = Modifier.padding(top = 30.dp)
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(horizontal = 16.dp, vertical = 30.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        ProfileMenuItem(
+                            text = "Настройки аккаунта",
+                            onClick = onSettingsClick
+                        )
+
+                        ProfileMenuItem(
+                            text = "Выйти из аккаунта",
+                            onClick = { showLogoutDialog = true }
+                        )
+
+                        ProfileMenuItem(
+                            text = "Удалить аккаунт",
+                            onClick = { showDeleteDialog = true },
+                            textColor = colorResource(id = R.color.darkpurple)
+                        )
+
+                        Spacer(modifier = Modifier.height(30.dp))
+
+                        DocumentLink(
+                            text = "Политика конфиденциальности",
+                            url = "https://docs.google.com/document/d/1rkNeE6-mZqJFvMPk8E_gcYLYOGSJt5oQZr0-PZa5CAs/edit?usp=sharing",
+                            context = context
+                        )
+
+                        DocumentLink(
+                            text = "Пользовательское соглашение",
+                            url = "https://docs.google.com/document/d/1AKRq43puxtA5UEcm00QrOwjKmgORwuv1OdHRdeXvC98/edit?usp=sharing",
+                            context = context
+                        )
+                    }
+                }
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp)
+                .background(colorResource(id = R.color.purple))
+        ) {
+            BottomNavigationBarCourier(navController, selected = "courier_profile_screen")
+        }
+    }
+}
+
+@Composable
+fun ProfileMenuItem(
+    text: String,
+    onClick: () -> Unit,
+    textColor: Color = colorResource(id = R.color.purple)
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 15.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, colorResource(id = R.color.purple)),
+        color = Color.White
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = text,
+                fontSize = 18.sp,
+                color = textColor,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Composable
+fun DocumentLink(text: String, url: String, context: Context) {
+    Text(
+        text = buildAnnotatedString {
+            withStyle(
+                style = SpanStyle(
+                    textDecoration = TextDecoration.Underline,
+                    color = colorResource(id = R.color.darkpurple)
+                )
+            ) {
+                append(text)
+            }
+        },
+        fontSize = 16.sp,
+        fontFamily = AppFontFamily,
+        modifier = Modifier
+            .clickable {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Не удалось открыть ссылку", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .padding(vertical = 8.dp)
+    )
+}

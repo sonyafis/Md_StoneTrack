@@ -15,7 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Md_StoneTrack"
         tools:targetApi="33"
-        android:usesCleartextTraffic="true"
         >
         <activity
             android:name="MainActivity"
