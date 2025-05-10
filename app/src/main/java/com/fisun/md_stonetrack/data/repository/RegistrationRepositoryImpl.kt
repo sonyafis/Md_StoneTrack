@@ -30,17 +30,17 @@ class RegistrationRepositoryImpl(
                 )
             )
 
-            println("DEBUG: API response code: ${response.code()}") // Логирование
-            println("DEBUG: API response body: ${response.body()}") // Логирование
-            println("DEBUG: API error body: ${response.errorBody()?.string()}") // Логирование
-
             if (response.isSuccessful) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.errorBody()?.string() ?: "Registration failed"))
+                Result.failure(
+                    Exception(
+                        response.errorBody()?.string() ?: "Регистрация не удалась"
+                    )
+                )
             }
         } catch (e: Exception) {
-            println("DEBUG: Registration error: ${e.message}") // Логирование
+            println("DEBUG: Ошибка регистрации: ${e.message}")
             Result.failure(e)
         }
     }
@@ -48,7 +48,10 @@ class RegistrationRepositoryImpl(
     override suspend fun checkUsernameExists(username: String): Boolean {
         return try {
             val response = apiService.checkUsernameExists(username)
-            response.isSuccessful && response.body() == true
+            if (!response.isSuccessful) {
+                return false
+            }
+            response.body() ?: false
         } catch (e: Exception) {
             false
         }
@@ -57,8 +60,10 @@ class RegistrationRepositoryImpl(
     override suspend fun checkEmailExists(email: String): Boolean {
         return try {
             val response = apiService.checkEmailExists(email)
+            println("CheckEmailExists Response: ${response.code()}, Body: ${response.body()}")
             response.isSuccessful && response.body() == true
         } catch (e: Exception) {
+            println("CheckEmailExists Error: ${e.message}")
             false
         }
     }

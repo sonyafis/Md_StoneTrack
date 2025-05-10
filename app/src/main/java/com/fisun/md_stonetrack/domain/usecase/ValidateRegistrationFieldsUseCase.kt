@@ -38,20 +38,16 @@ class ValidateRegistrationFieldsUseCase {
             if (password.length < 8) {
                 errors["password"] = "Пароль должен содержать минимум 8 символов"
                 isValid = false
-            }
-            else if (!password.any { it.isDigit() }) {
+            } else if (!password.any { it.isDigit() }) {
                 errors["password"] = "Пароль должен содержать хотя бы одну цифру"
                 isValid = false
-            }
-            else if (!password.any { it.isUpperCase() }) {
+            } else if (!password.any { it.isUpperCase() }) {
                 errors["password"] = "Пароль должен содержать хотя бы одну заглавную букву"
                 isValid = false
-            }
-            else if (!password.any { it.isLowerCase() }) {
+            } else if (!password.any { it.isLowerCase() }) {
                 errors["password"] = "Пароль должен содержать хотя бы одну строчную букву"
                 isValid = false
-            }
-            else if (password.any { it.isWhitespace() }) {
+            } else if (password.any { it.isWhitespace() }) {
                 errors["password"] = "Пароль не должен содержать пробелов"
                 isValid = false
             }
@@ -84,12 +80,10 @@ class ValidateRegistrationFieldsUseCase {
             if (digitsOnly.length !in 10..12) {
                 errors["phoneNumber"] = "Номер должен содержать 10-12 цифр"
                 isValid = false
-            }
-            else if (!digitsOnly.startsWith("7") && !digitsOnly.startsWith("8") && digitsOnly.length == 11) {
+            } else if (!digitsOnly.startsWith("7") && !digitsOnly.startsWith("8") && digitsOnly.length == 11) {
                 errors["phoneNumber"] = "Введите корректный российский номер"
                 isValid = false
-            }
-            else if (digitsOnly.length < 11) {
+            } else if (digitsOnly.length < 11) {
                 errors["phoneNumber"] = "Слишком короткий номер"
                 isValid = false
             }

@@ -12,7 +12,6 @@ import com.fisun.md_stonetrack.domain.model.RegistrationRequest
 import com.fisun.md_stonetrack.domain.model.RegistrationResponse
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -32,6 +31,7 @@ interface ApiService {
 
     @GET("api/orders/")
     suspend fun getOrders(@Header("Authorization") token: String): List<OrderDTO>
+
     @POST("api/feedbacks/")
     suspend fun sendFeedback(@Header("Authorization") token: String, @Body feedback: FeedbackDTO)
 
@@ -43,20 +43,15 @@ interface ApiService {
 
     @GET("auth/users/check_email/")
     suspend fun checkEmailExists(@Query("email") email: String): Response<Boolean>
+
     @PATCH("api/orders/{id}/")
     suspend fun updateOrderStatus(
-        @Path("id") id: Int,
-        @Body statusUpdate: Map<String, Int>
+        @Path("id") id: Int, @Body statusUpdate: Map<String, Int>
     )
 
-    @DELETE("api/users/delete")
-    suspend fun deleteAccount(
-        @Header("Authorization") token: String
-    ): Response<Unit>
     @POST("auth/users/set_password/")
     suspend fun changePassword(
-        @Header("Authorization") token: String,
-        @Body request: ChangePasswordRequest
+        @Header("Authorization") token: String, @Body request: ChangePasswordRequest
     ): Response<Unit>
 
     @POST("auth/users/reset_password/")

@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.client.about_us_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -115,7 +115,11 @@ fun AboutUsView(
                                 .background(colorResource(id = R.color.light_gray))
                                 .padding(horizontal = 24.dp, vertical = 8.dp)
                         ) {
-                            Text(text = "О компании MD-STONE", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "О компании MD-STONE",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
 

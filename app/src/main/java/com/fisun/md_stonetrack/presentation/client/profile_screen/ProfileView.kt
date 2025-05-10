@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.client.profile_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -56,14 +56,11 @@ fun ProfileView(
 
     LaunchedEffect(navigationEvent) {
         when (navigationEvent) {
-//            is ProfileViewModel.ProfileEvent.NavigateToAbout -> {
-//                navController.navigate("about_us_screen")
-//                viewModel.resetNavigationEvent()
-//            }
             is ProfileViewModel.ProfileEvent.NavigateToSettings -> {
                 navController.navigate("account_settings_screen")
                 viewModel.resetNavigationEvent()
             }
+
             is ProfileViewModel.ProfileEvent.Logout -> {
                 viewModel.logout()
                 navController.navigate("start_screen") {
@@ -71,13 +68,7 @@ fun ProfileView(
                 }
                 viewModel.resetNavigationEvent()
             }
-            is ProfileViewModel.ProfileEvent.DeleteAccount -> {
-                viewModel.deleteAccount()
-                navController.navigate("start_screen") {
-                    popUpTo(0)
-                }
-                viewModel.resetNavigationEvent()
-            }
+
             else -> {}
         }
     }
@@ -97,6 +88,7 @@ fun ProfileView(
                     CircularProgressIndicator(color = Color.White)
                 }
             }
+
             is ProfileViewModel.ProfileState.Error -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -110,6 +102,7 @@ fun ProfileView(
                     )
                 }
             }
+
             is ProfileViewModel.ProfileState.Success -> {
                 val userName = (state as ProfileViewModel.ProfileState.Success).userName
 
@@ -117,8 +110,7 @@ fun ProfileView(
                     navController = navController,
                     userName = userName,
                     onSettingsClick = { viewModel.onEvent(ProfileViewModel.ProfileEvent.NavigateToSettings) },
-                    onLogoutClick = { viewModel.onEvent(ProfileViewModel.ProfileEvent.Logout) },
-                    onDeleteClick = { viewModel.onEvent(ProfileViewModel.ProfileEvent.DeleteAccount) }
+                    onLogoutClick = { viewModel.onEvent(ProfileViewModel.ProfileEvent.Logout) }
                 )
             }
         }
@@ -131,10 +123,8 @@ private fun ProfileContent(
     userName: String,
     onSettingsClick: () -> Unit,
     onLogoutClick: () -> Unit,
-    onDeleteClick: () -> Unit
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
-    var showDeleteDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     if (showLogoutDialog) {
@@ -163,35 +153,11 @@ private fun ProfileContent(
         )
     }
 
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Удаление аккаунта") },
-            text = { Text("Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.") },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showDeleteDialog = false
-                        onDeleteClick()
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.red))
-                ) {
-                    Text("Удалить")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showDeleteDialog = false }
-                ) {
-                    Text("Отмена")
-                }
-            }
-        )
-    }
-
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(colorResource(id = R.color.purple))) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.purple))
+    ) {
 
         Column(
             modifier = Modifier
@@ -244,7 +210,9 @@ private fun ProfileContent(
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 24.dp)
                 ) {
                     Box(
                         modifier = Modifier
@@ -258,73 +226,83 @@ private fun ProfileContent(
                                 .background(colorResource(id = R.color.light_gray))
                                 .padding(horizontal = 24.dp, vertical = 8.dp)
                         ) {
-                            Text(text = "Личный кабинет", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "Личный кабинет",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(30.dp))
-
-                    Box(
+                    Column(
                         modifier = Modifier
-                            .size(90.dp)
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        colorResource(id = R.color.purple),
-                                        colorResource(id = R.color.darkpurple)
-                                    )
-                                ),
-                                shape = CircleShape
-                            )
-                            .border(
-                                width = 2.dp,
-                                color = colorResource(id = R.color.darkpurple),
-                                shape = CircleShape
-                            )
-                            .padding(8.dp),
-                        contentAlignment = Alignment.Center
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = userName.first().toString().uppercase(),
-                            color = Color.White,
-                            fontSize = 48.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                    Text(
-                        text = "Здравствуйте, $userName!",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = colorResource(id = R.color.black),
-                        modifier = Modifier.padding(top = 30.dp)
-                    )
+                        Box(
+                            modifier = Modifier
+                                .size(90.dp)
+                                .background(
+                                    brush = Brush.verticalGradient(
+                                        colors = listOf(
+                                            colorResource(id = R.color.purple),
+                                            colorResource(id = R.color.darkpurple)
+                                        )
+                                    ),
+                                    shape = CircleShape
+                                )
+                                .border(
+                                    width = 2.dp,
+                                    color = colorResource(id = R.color.darkpurple),
+                                    shape = CircleShape
+                                )
+                                .padding(8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = userName.first().toString().uppercase(),
+                                color = Color.White,
+                                fontSize = 48.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Text(
+                            text = "Здравствуйте, $userName!",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colorResource(id = R.color.black),
+                            modifier = Modifier.padding(top = 30.dp)
+                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 30.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            ProfileMenuItem(
+                                text = "Настройки аккаунта",
+                                onClick = onSettingsClick
+                            )
+
+                            ProfileMenuItem(
+                                text = "Выйти из аккаунта",
+                                textColor = colorResource(id = R.color.darkpurple),
+                                onClick = { showLogoutDialog = true }
+                            )
+                        }
+                    }
 
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 30.dp),
-                        verticalArrangement = Arrangement.Center,
+                            .padding(bottom = 40.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        ProfileMenuItem(
-                            text = "Настройки аккаунта",
-                            onClick = onSettingsClick
-                        )
-
-                        ProfileMenuItem(
-                            text = "Выйти из аккаунта",
-                            onClick = { showLogoutDialog = true }
-                        )
-
-                        ProfileMenuItem(
-                            text = "Удалить аккаунт",
-                            onClick = { showDeleteDialog = true },
-                            textColor = colorResource(id = R.color.darkpurple)
-                        )
-
-                        Spacer(modifier = Modifier.height(30.dp))
-
                         DocumentLink(
                             text = "Политика конфиденциальности",
                             url = "https://docs.google.com/document/d/1rkNeE6-mZqJFvMPk8E_gcYLYOGSJt5oQZr0-PZa5CAs/edit?usp=sharing",

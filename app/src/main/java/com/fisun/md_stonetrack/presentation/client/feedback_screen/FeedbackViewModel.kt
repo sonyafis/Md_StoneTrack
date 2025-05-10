@@ -53,7 +53,6 @@ class FeedbackViewModel(
     }
 
 
-
     private fun submitFeedback() {
         viewModelScope.launch {
             state = state.copy(isLoading = true, error = null)
@@ -63,14 +62,16 @@ class FeedbackViewModel(
                 if (token == null || userId == null) {
                     throw Exception("Не авторизован")
                 }
-                sendFeedbackUseCase(token, Feedback(
-                    user_fullname = state.fullname,
-                    email = state.email,
-                    message = state.message,
-                    phone_number = state.phone,
-                    type_feedback = state.type,
-                    id_super_user = userId
-                ))
+                sendFeedbackUseCase(
+                    token, Feedback(
+                        user_fullname = state.fullname,
+                        email = state.email,
+                        message = state.message,
+                        phone_number = state.phone,
+                        type_feedback = state.type,
+                        id_super_user = userId
+                    )
+                )
             }
             state = when {
                 result.isSuccess -> state.copy(success = true)

@@ -23,6 +23,7 @@ class CheckAuthUseCase(
                         AuthResult.Authorized(user.type_user ?: "default")
                     } ?: AuthResult.Unauthorized
                 }
+
                 else -> {
                     val refreshToken = authRepository.getRefreshToken()
                     if (!refreshToken.isNullOrEmpty()) {

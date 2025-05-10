@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.register_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.text.font.FontWeight
@@ -111,7 +111,8 @@ fun RegistrationView(
     usernameError = if (isUsernameTouched) validationResult.errors["username"] else null
     emailError = if (isEmailTouched) validationResult.errors["email"] else null
     passwordError = if (isPasswordTouched) validationResult.errors["password"] else null
-    confirmPasswordError = if (isConfirmPasswordTouched) validationResult.errors["confirmPassword"] else null
+    confirmPasswordError =
+        if (isConfirmPasswordTouched) validationResult.errors["confirmPassword"] else null
     firstNameError = if (isFirstNameTouched) validationResult.errors["firstName"] else null
     lastNameError = if (isLastNameTouched) validationResult.errors["lastName"] else null
     phoneNumberError = if (isPhoneNumberTouched) validationResult.errors["phoneNumber"] else null
@@ -179,7 +180,8 @@ fun RegistrationView(
                             modifier = Modifier
                                 .background(
                                     colorResource(id = R.color.darkpurple),
-                                    shape = RoundedCornerShape(4.dp))
+                                    shape = RoundedCornerShape(4.dp)
+                                )
                                 .padding(horizontal = 14.dp, vertical = 6.dp)
                         ) {
                             Text(
@@ -252,7 +254,7 @@ fun RegistrationView(
                         RegistrationTextField(
                             value = username,
                             onValueChange = { username = it },
-                            label = "Логин",
+                            label = "Логин(username)",
                             errorMessage = usernameError,
                             onTouched = { isUsernameTouched = true }
                         )
@@ -303,7 +305,12 @@ fun RegistrationView(
                                 tag = "TOS",
                                 annotation = "https://docs.google.com/document/d/1AKRq43puxtA5UEcm00QrOwjKmgORwuv1OdHRdeXvC98/edit?usp=sharing"
                             )
-                            withStyle(style = SpanStyle(color = colorResource(id = R.color.darkpurple), fontWeight = FontWeight.Bold)) {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = colorResource(id = R.color.darkpurple),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            ) {
                                 append("пользовательским соглашением")
                             }
                             pop()
@@ -314,7 +321,12 @@ fun RegistrationView(
                                 tag = "Privacy",
                                 annotation = "https://docs.google.com/document/d/1rkNeE6-mZqJFvMPk8E_gcYLYOGSJt5oQZr0-PZa5CAs/edit?usp=sharing"
                             )
-                            withStyle(style = SpanStyle(color = colorResource(id = R.color.darkpurple), fontWeight = FontWeight.Bold)) {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = colorResource(id = R.color.darkpurple),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            ) {
                                 append("политикой конфиденциальности")
                             }
                             pop()
@@ -327,7 +339,8 @@ fun RegistrationView(
                             onClick = { offset ->
                                 annotatedText.getStringAnnotations(start = offset, end = offset)
                                     .firstOrNull()?.let { annotation ->
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                        val intent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
                                         context.startActivity(intent)
                                     }
                             }
@@ -407,18 +420,26 @@ fun RegistrationView(
                         is RegistrationViewModel.RegistrationUiState.Loading -> {
                             CircularProgressIndicator()
                         }
+
                         is RegistrationViewModel.RegistrationUiState.Error -> {
                             Text(
                                 text = state.message,
                                 color = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.padding(top = 8.dp)
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
                             )
                         }
+
                         is RegistrationViewModel.RegistrationUiState.Success -> {
                             LaunchedEffect(state) {
-                                navController.popBackStack()
+                                navController.navigate("signin") {
+                                    popUpTo("register") { inclusive = true }
+                                }
                             }
                         }
+
                         else -> {}
                     }
                 }

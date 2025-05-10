@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.courier.courier_account_settings_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -53,7 +53,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.fisun.md_stonetrack.R
-import com.fisun.md_stonetrack.presentation.navigation.BottomNavigationBar
 import com.fisun.md_stonetrack.presentation.navigation.BottomNavigationBarCourier
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -74,11 +73,14 @@ fun CourierAccountSettingsView(
             is CourierAccountSettingsViewModel.AccountSettingsState.Loading -> {
                 LoadingView()
             }
+
             is CourierAccountSettingsViewModel.AccountSettingsState.Error -> {
                 ErrorView((state as CourierAccountSettingsViewModel.AccountSettingsState.Error).message)
             }
+
             is CourierAccountSettingsViewModel.AccountSettingsState.Success -> {
-                val userData = (state as CourierAccountSettingsViewModel.AccountSettingsState.Success).userData
+                val userData =
+                    (state as CourierAccountSettingsViewModel.AccountSettingsState.Success).userData
                 AccountSettingsContent(
                     navController = navController,
                     userData = userData,
@@ -101,9 +103,11 @@ private fun AccountSettingsContent(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(colorResource(id = R.color.purple))) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.purple))
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -170,7 +174,11 @@ private fun AccountSettingsContent(
                                 .background(colorResource(id = R.color.light_gray))
                                 .padding(horizontal = 24.dp, vertical = 8.dp)
                         ) {
-                            Text(text = "Настройки аккаунта", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "Настройки аккаунта",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
 

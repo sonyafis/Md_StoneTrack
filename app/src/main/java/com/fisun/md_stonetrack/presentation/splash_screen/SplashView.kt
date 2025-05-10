@@ -21,7 +21,7 @@ fun SplashView(
 
     LaunchedEffect(uiState) {
         when (uiState) {
-            is SplashViewModel.AuthCheckState.Loading -> Unit // Ждем
+            is SplashViewModel.AuthCheckState.Loading -> Unit
             is SplashViewModel.AuthCheckState.Authorized -> {
                 val role = (uiState as SplashViewModel.AuthCheckState.Authorized).role
                 when (role.lowercase()) {
@@ -29,6 +29,7 @@ fun SplashView(
                     else -> navController.navigateToOrdersScreen()
                 }
             }
+
             is SplashViewModel.AuthCheckState.Unauthorized -> {
                 navController.navigateToAuthScreen()
             }
@@ -43,7 +44,6 @@ fun SplashView(
     }
 }
 
-// Расширения для навигации
 fun NavHostController.navigateToAuthScreen() {
     navigate("auth_graph") {
         popUpTo("splash_screen") { inclusive = true }

@@ -23,9 +23,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 class AuthRepositoryImpl(
-    private val apiService: ApiService,
-    private val context: Context,
-    private val userDao: UserDao
+    private val apiService: ApiService, private val context: Context, private val userDao: UserDao
 ) : AuthRepository {
 
     private val dataStore = context.dataStore
@@ -42,15 +40,21 @@ class AuthRepositoryImpl(
                         response.isSuccessful -> response.body()?.let { authResponse ->
                             if (authResponse.access != null && authResponse.refresh != null) {
                                 saveTokens(authResponse.access, authResponse.refresh)
-                                Result.success(AuthTokens(authResponse.access, authResponse.refresh))
+                                Result.success(
+                                    AuthTokens(
+                                        authResponse.access, authResponse.refresh
+                                    )
+                                )
                             } else {
                                 Result.failure(Exception("Tokens missing"))
                             }
                         } ?: Result.failure(Exception("Empty response"))
+
                         response.code() == 401 -> {
                             logout()
                             Result.failure(Exception("Refresh token invalid"))
                         }
+
                         else -> Result.failure(Exception("Refresh failed"))
                     }
                 }
@@ -69,12 +73,15 @@ class AuthRepositoryImpl(
                     if (authResponse.access != null && authResponse.refresh != null) {
                         saveTokens(authResponse.access, authResponse.refresh)
 
-                        val userDetailsResponse = apiService.getUserDetails("Bearer ${authResponse.access}")
+                        val userDetailsResponse =
+                            apiService.getUserDetails("Bearer ${authResponse.access}")
 
                         if (userDetailsResponse.isSuccessful) {
                             val userDetails = userDetailsResponse.body()
 
-                            val userId = userDetails?.id_super_user ?: throw Exception("User ID is null")
+                            val userId =
+                                userDetails?.id_super_user
+                                    ?: throw Exception("ID пользователя null")
                             saveUserId(userId)
 
                             userDao.upsertUser(
@@ -153,37 +160,6 @@ class AuthRepositoryImpl(
         return userDao.getUserById(userId)
     }
 
-    override suspend fun deleteAccount(): Boolean {
-        return try {
-            val accessToken = getAccessToken() ?: return false
-
-            val response = apiService.deleteAccount("Bearer $accessToken")
-
-            if (response.isSuccessful) {
-                logout()
-                true
-            } else {
-                when (response.code()) {
-                    401 -> {
-                        val refreshToken = getRefreshToken() ?: return false
-
-                        when (val newTokens = runCatching { refreshTokens(refreshToken) }.getOrNull()) {
-                            is AuthTokens -> {
-                                apiService.deleteAccount("Bearer ${newTokens.accessToken}")
-                                    .isSuccessful
-                                    .also { if (it) logout() }
-                            }
-                            else -> false
-                        }
-                    }
-                    else -> false
-                }
-            }
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     override suspend fun saveUserId(userId: Int) {
         dataStore.edit { preferences ->
             preferences[USER_ID_KEY] = userId
@@ -201,10 +177,7 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun changePassword(
-        token: String,
-        current_password: String,
-        new_password: String,
-        re_new_password: String
+        token: String, current_password: String, new_password: String, re_new_password: String
     ): Result<Unit> {
         return try {
             val response = apiService.changePassword(
@@ -237,16 +210,15 @@ class AuthRepositoryImpl(
             Result.failure(Exception("Сетевая ошибка: ${e.message}"))
         }
     }
-}
 
-private fun parseErrorMessage(json: String?): String {
-    return try {
-        val jsonArray = org.json.JSONArray(json)
-        jsonArray.getString(0)
-    } catch (e: Exception) {
-        json ?: "Неизвестная ошибка"
+    private fun parseErrorMessage(json: String?): String {
+        return try {
+            val jsonArray = org.json.JSONArray(json)
+            jsonArray.getString(0)
+        } catch (e: Exception) {
+            json ?: "Неизвестная ошибка"
+        }
     }
+
+    class UserNotFoundException(message: String) : Exception(message)
 }
-
-
-class UserNotFoundException(message: String) : Exception(message)

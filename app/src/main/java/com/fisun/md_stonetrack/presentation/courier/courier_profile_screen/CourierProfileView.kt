@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.courier.courier_profile_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -48,8 +48,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CourierProfileView(
-    navController: NavController,
-    viewModel: CourierProfileViewModel = koinViewModel()
+    navController: NavController, viewModel: CourierProfileViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val navigationEvent by viewModel.navigationEvent.collectAsState()
@@ -60,6 +59,7 @@ fun CourierProfileView(
                 navController.navigate("courier_account_settings_screen")
                 viewModel.resetNavigationEvent()
             }
+
             is CourierProfileViewModel.ProfileEvent.Logout -> {
                 viewModel.logout()
                 navController.navigate("start_screen") {
@@ -67,13 +67,7 @@ fun CourierProfileView(
                 }
                 viewModel.resetNavigationEvent()
             }
-            is CourierProfileViewModel.ProfileEvent.DeleteAccount -> {
-                viewModel.deleteAccount()
-                navController.navigate("start_screen") {
-                    popUpTo(0)
-                }
-                viewModel.resetNavigationEvent()
-            }
+
             else -> {}
         }
     }
@@ -93,6 +87,7 @@ fun CourierProfileView(
                     CircularProgressIndicator(color = Color.White)
                 }
             }
+
             is CourierProfileViewModel.ProfileState.Error -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -106,6 +101,7 @@ fun CourierProfileView(
                     )
                 }
             }
+
             is CourierProfileViewModel.ProfileState.Success -> {
                 val userName = (state as CourierProfileViewModel.ProfileState.Success).userName
 
@@ -114,7 +110,6 @@ fun CourierProfileView(
                     userName = userName,
                     onSettingsClick = { viewModel.onEvent(CourierProfileViewModel.ProfileEvent.NavigateToSettings) },
                     onLogoutClick = { viewModel.onEvent(CourierProfileViewModel.ProfileEvent.Logout) },
-                    onDeleteClick = { viewModel.onEvent(CourierProfileViewModel.ProfileEvent.DeleteAccount) }
                 )
             }
         }
@@ -126,11 +121,9 @@ private fun ProfileContent(
     navController: NavController,
     userName: String,
     onSettingsClick: () -> Unit,
-    onLogoutClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onLogoutClick: () -> Unit
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
-    var showDeleteDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     if (showLogoutDialog) {
@@ -151,43 +144,16 @@ private fun ProfileContent(
             },
             dismissButton = {
                 TextButton(
-                    onClick = { showLogoutDialog = false }
-                ) {
+                    onClick = { showLogoutDialog = false }) {
                     Text("Отмена")
                 }
-            }
-        )
+            })
     }
-
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Удаление аккаунта") },
-            text = { Text("Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.") },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showDeleteDialog = false
-                        onDeleteClick()
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.red))
-                ) {
-                    Text("Удалить")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showDeleteDialog = false }
-                ) {
-                    Text("Отмена")
-                }
-            }
-        )
-    }
-
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(colorResource(id = R.color.purple))) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.purple))
+    ) {
 
         Column(
             modifier = Modifier
@@ -203,8 +169,7 @@ private fun ProfileContent(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { navController.navigate("orders_screen") }
-                ) {
+                    modifier = Modifier.clickable { navController.navigate("orders_screen") }) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "На главную",
@@ -240,7 +205,9 @@ private fun ProfileContent(
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 24.dp)
                 ) {
                     Box(
                         modifier = Modifier
@@ -254,81 +221,86 @@ private fun ProfileContent(
                                 .background(colorResource(id = R.color.light_gray))
                                 .padding(horizontal = 24.dp, vertical = 8.dp)
                         ) {
-                            Text(text = "Личный кабинет", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "Личный кабинет",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(30.dp))
-
-                    Box(
+                    Column(
                         modifier = Modifier
-                            .size(90.dp)
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        colorResource(id = R.color.purple),
-                                        colorResource(id = R.color.darkpurple)
-                                    )
-                                ),
-                                shape = CircleShape
-                            )
-                            .border(
-                                width = 2.dp,
-                                color = colorResource(id = R.color.darkpurple),
-                                shape = CircleShape
-                            )
-                            .padding(8.dp),
-                        contentAlignment = Alignment.Center
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = userName.first().toString().uppercase(),
-                            color = Color.White,
-                            fontSize = 48.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                    Text(
-                        text = "Здравствуйте, $userName!",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = colorResource(id = R.color.black),
-                        modifier = Modifier.padding(top = 30.dp)
-                    )
+                        Box(
+                            modifier = Modifier
+                                .size(90.dp)
+                                .background(
+                                    brush = Brush.verticalGradient(
+                                        colors = listOf(
+                                            colorResource(id = R.color.purple),
+                                            colorResource(id = R.color.darkpurple)
+                                        )
+                                    ), shape = CircleShape
+                                )
+                                .border(
+                                    width = 2.dp,
+                                    color = colorResource(id = R.color.darkpurple),
+                                    shape = CircleShape
+                                )
+                                .padding(8.dp), contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = userName.first().toString().uppercase(),
+                                color = Color.White,
+                                fontSize = 48.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Text(
+                            text = "Здравствуйте, $userName!",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colorResource(id = R.color.black),
+                            modifier = Modifier.padding(top = 30.dp)
+                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 30.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CourierProfileMenuItem(
+                                text = "Настройки аккаунта", onClick = onSettingsClick
+                            )
+
+                            CourierProfileMenuItem(
+                                text = "Выйти из аккаунта",
+                                textColor = colorResource(id = R.color.darkpurple),
+                                onClick = { showLogoutDialog = true })
+                        }
+                    }
 
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
-                            .padding(horizontal = 16.dp, vertical = 30.dp),
-                        verticalArrangement = Arrangement.Center,
+                            .padding(bottom = 40.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        ProfileMenuItem(
-                            text = "Настройки аккаунта",
-                            onClick = onSettingsClick
-                        )
-
-                        ProfileMenuItem(
-                            text = "Выйти из аккаунта",
-                            onClick = { showLogoutDialog = true }
-                        )
-
-                        ProfileMenuItem(
-                            text = "Удалить аккаунт",
-                            onClick = { showDeleteDialog = true },
-                            textColor = colorResource(id = R.color.darkpurple)
-                        )
-
-                        Spacer(modifier = Modifier.height(30.dp))
-
-                        DocumentLink(
+                        CourierDocumentLink(
                             text = "Политика конфиденциальности",
                             url = "https://docs.google.com/document/d/1rkNeE6-mZqJFvMPk8E_gcYLYOGSJt5oQZr0-PZa5CAs/edit?usp=sharing",
                             context = context
                         )
 
-                        DocumentLink(
+                        CourierDocumentLink(
                             text = "Пользовательское соглашение",
                             url = "https://docs.google.com/document/d/1AKRq43puxtA5UEcm00QrOwjKmgORwuv1OdHRdeXvC98/edit?usp=sharing",
                             context = context
@@ -350,10 +322,8 @@ private fun ProfileContent(
 }
 
 @Composable
-fun ProfileMenuItem(
-    text: String,
-    onClick: () -> Unit,
-    textColor: Color = colorResource(id = R.color.purple)
+fun CourierProfileMenuItem(
+    text: String, onClick: () -> Unit, textColor: Color = colorResource(id = R.color.purple)
 ) {
     Surface(
         modifier = Modifier
@@ -384,29 +354,24 @@ fun ProfileMenuItem(
 }
 
 @Composable
-fun DocumentLink(text: String, url: String, context: Context) {
-    Text(
-        text = buildAnnotatedString {
-            withStyle(
-                style = SpanStyle(
-                    textDecoration = TextDecoration.Underline,
-                    color = colorResource(id = R.color.darkpurple)
-                )
-            ) {
-                append(text)
+fun CourierDocumentLink(text: String, url: String, context: Context) {
+    Text(text = buildAnnotatedString {
+        withStyle(
+            style = SpanStyle(
+                textDecoration = TextDecoration.Underline,
+                color = colorResource(id = R.color.darkpurple)
+            )
+        ) {
+            append(text)
+        }
+    }, fontSize = 16.sp, fontFamily = AppFontFamily, modifier = Modifier
+        .clickable {
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(context, "Не удалось открыть ссылку", Toast.LENGTH_SHORT).show()
             }
-        },
-        fontSize = 16.sp,
-        fontFamily = AppFontFamily,
-        modifier = Modifier
-            .clickable {
-                try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context.startActivity(intent)
-                } catch (e: Exception) {
-                    Toast.makeText(context, "Не удалось открыть ссылку", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .padding(vertical = 8.dp)
-    )
+        }
+        .padding(vertical = 8.dp))
 }

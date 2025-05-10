@@ -22,7 +22,8 @@ class CourierHistoryDetailViewModel(
                 val order = allOrders.find { it.id_order == id_order }
                 _orderState.value = CourierHistoryDetailState(order = order)
             } catch (e: Exception) {
-                _orderState.value = CourierHistoryDetailState(error = e.message ?: "Неизвестная ошибка")
+                _orderState.value =
+                    CourierHistoryDetailState(error = e.message ?: "Неизвестная ошибка")
             }
         }
     }

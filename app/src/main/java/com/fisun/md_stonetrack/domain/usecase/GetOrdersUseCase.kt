@@ -19,28 +19,29 @@ class GetOrdersUseCase(
                 orderRepository.getOrders(accessToken)
             } catch (e: HttpException) {
                 if (e.code() == 401) {
-                    handleUnauthorizedError(refreshToken) // Передаем refreshToken
+                    handleUnauthorizedError(refreshToken)
                 } else {
-                    throw IOException("Network error: ${e.message}")
+                    throw IOException("Ошибка сети: ${e.message}")
                 }
             }
         } catch (e: Exception) {
             throw when (e) {
                 is SessionExpiredException -> e
-                else -> IOException("Failed to fetch orders: ${e.message}")
+                else -> IOException("Не удалось получить заказы: ${e.message}")
             }
         }
     }
 
     private suspend fun handleUnauthorizedError(refreshToken: String): List<Order> {
         return try {
-            val refreshResult = authRepository.refreshTokens(refreshToken) // Используем переданный refreshToken
+            val refreshResult = authRepository.refreshTokens(refreshToken)
             when {
                 refreshResult.isSuccess -> {
                     val newAccessToken = refreshResult.getOrNull()?.accessToken
                         ?: throw SessionExpiredException()
                     orderRepository.getOrders(newAccessToken)
                 }
+
                 else -> throw SessionExpiredException()
             }
         } catch (e: Exception) {
@@ -49,4 +50,4 @@ class GetOrdersUseCase(
     }
 }
 
-class SessionExpiredException : Exception("Session expired, please login again")
+class SessionExpiredException : Exception("Сессия истекла, пожалуйста, войдите снова")

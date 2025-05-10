@@ -31,13 +31,11 @@ class ChangePasswordViewModel(
         val errors = mutableMapOf<String, String?>()
         var isValid = true
 
-        // Валидация текущего пароля
         if (current_password.isBlank()) {
             errors["current_password"] = "Введите текущий пароль"
             isValid = false
         }
 
-        // Валидация нового пароля
         if (new_password.isBlank()) {
             errors["new_password"] = "Введите новый пароль"
             isValid = false
@@ -60,7 +58,6 @@ class ChangePasswordViewModel(
             }
         }
 
-        // Валидация подтверждения пароля
         if (re_new_password.isBlank()) {
             errors["re_new_password"] = "Подтвердите новый пароль"
             isValid = false
@@ -87,7 +84,8 @@ class ChangePasswordViewModel(
                 return@launch
             }
 
-            val result = changePasswordUseCase(token, current_password, new_password, re_new_password)
+            val result =
+                changePasswordUseCase(token, current_password, new_password, re_new_password)
             isLoading = false
             message = result.fold(
                 onSuccess = { "Пароль успешно изменён" },

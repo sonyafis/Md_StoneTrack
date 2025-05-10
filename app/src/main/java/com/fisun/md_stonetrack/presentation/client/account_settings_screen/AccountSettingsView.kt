@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.client.account_settings_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -73,11 +73,14 @@ fun AccountSettingsView(
             is AccountSettingsViewModel.AccountSettingsState.Loading -> {
                 LoadingView()
             }
+
             is AccountSettingsViewModel.AccountSettingsState.Error -> {
                 ErrorView((state as AccountSettingsViewModel.AccountSettingsState.Error).message)
             }
+
             is AccountSettingsViewModel.AccountSettingsState.Success -> {
-                val userData = (state as AccountSettingsViewModel.AccountSettingsState.Success).userData
+                val userData =
+                    (state as AccountSettingsViewModel.AccountSettingsState.Success).userData
                 AccountSettingsContent(
                     navController = navController,
                     userData = userData,
@@ -100,9 +103,11 @@ private fun AccountSettingsContent(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(colorResource(id = R.color.purple))) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.purple))
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -169,7 +174,11 @@ private fun AccountSettingsContent(
                                 .background(colorResource(id = R.color.light_gray))
                                 .padding(horizontal = 24.dp, vertical = 8.dp)
                         ) {
-                            Text(text = "Настройки аккаунта", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "Настройки аккаунта",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
 

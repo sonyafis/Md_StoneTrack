@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.fisun.md_stonetrack.data.db.entities.UserEntity
+
 @Dao
 interface UserDao {
     @Query("SELECT * FROM user_table WHERE id = :id LIMIT 1")

@@ -16,29 +16,19 @@ import com.fisun.md_stonetrack.domain.repository.AuthRepository
 import com.fisun.md_stonetrack.domain.repository.FeedbackRepository
 import com.fisun.md_stonetrack.domain.repository.OrderRepository
 import com.fisun.md_stonetrack.domain.repository.RegistrationRepository
-import com.fisun.md_stonetrack.domain.usecase.LoginUseCase
-import com.fisun.md_stonetrack.presentation.sign_in_screen.SignInViewModel
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth_preferences")
 
 val dataModule = module {
     single<ApiService> { RetrofitClient.apiService }
-
     single { AppDatabase.getDatabase(androidContext()) }
     single { get<AppDatabase>().userDao() }
     single { CryptoManager() }
-
     single<DataStore<Preferences>> { androidContext().dataStore }
-
-    single<AuthRepository> { AuthRepositoryImpl(get(), androidContext(), get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
     single<OrderRepository> { OrderRepositoryImpl(get()) }
     single<FeedbackRepository> { FeedbackRepositoryImpl(get()) }
     single<RegistrationRepository> { RegistrationRepositoryImpl(get()) }
-
-    factory { LoginUseCase(get()) }
-
-    viewModelOf(::SignInViewModel)
 }

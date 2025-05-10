@@ -1,9 +1,10 @@
 package com.fisun.md_stonetrack.presentation.reset_password_screen
+
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fisun.md_stonetrack.data.repository.UserNotFoundException
+import com.fisun.md_stonetrack.data.repository.AuthRepositoryImpl.UserNotFoundException
 import com.fisun.md_stonetrack.domain.usecase.ResetPasswordUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,4 +1,5 @@
-import androidx.compose.foundation.isSystemInDarkTheme
+package com.fisun.md_stonetrack.presentation.theme
+
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
@@ -19,7 +20,6 @@ val AppTypography = Typography(
         fontSize = 45.sp,
         lineHeight = 52.sp
     ),
-    // Добавьте все необходимые стили
     headlineMedium = TextStyle(
         fontFamily = AppFontFamily,
         fontWeight = FontWeight.Bold,
@@ -39,7 +39,6 @@ val AppTypography = Typography(
 
 @Composable
 fun MdStoneTrackTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     MaterialTheme(

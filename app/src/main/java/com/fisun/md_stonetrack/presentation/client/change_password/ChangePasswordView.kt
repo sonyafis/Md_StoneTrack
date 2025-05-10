@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.client.change_password
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -62,136 +62,138 @@ fun ChangePasswordView(
     Scaffold(
         containerColor = colorResource(id = R.color.purple)
     ) { padding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)) {
-                Column(
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 80.dp)
+            ) {
+                Row(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 80.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 16.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        modifier = Modifier.clickable { navController.popBackStack() }
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.clickable { navController.popBackStack() }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "К настройкам",
-                                tint = Color.White,
-                                modifier = Modifier.size(22.dp)
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = "К настройкам",
-                                fontFamily = AppFontFamily,
-                                fontSize = 18.sp,
-                                color = Color.White,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-
-                        Image(
-                            painter = painterResource(id = R.drawable.logo_home),
-                            contentDescription = "Логотип",
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "К настройкам",
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "К настройкам",
+                            fontFamily = AppFontFamily,
+                            fontSize = 18.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Surface(
-                        shape = RoundedCornerShape(32.dp),
-                        tonalElevation = 4.dp,
-                        shadowElevation = 8.dp,
-                        color = Color.White,
+
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_home),
+                        contentDescription = "Логотип",
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Surface(
+                    shape = RoundedCornerShape(32.dp),
+                    tonalElevation = 4.dp,
+                    shadowElevation = 8.dp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.95f)
+                ) {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.95f)
+                            .padding(horizontal = 24.dp, vertical = 16.dp)
+                            .verticalScroll(rememberScrollState())
                     ) {
-                        Column(
+                        Box(
                             modifier = Modifier
-                                .padding(horizontal = 24.dp, vertical = 16.dp)
-                                .verticalScroll(rememberScrollState())
+                                .fillMaxWidth()
+                                .padding(top = 12.dp),
+                            contentAlignment = Alignment.Center
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 12.dp),
-                                contentAlignment = Alignment.Center
+                                    .clip(RoundedCornerShape(50))
+                                    .background(colorResource(id = R.color.light_gray))
+                                    .padding(horizontal = 24.dp, vertical = 8.dp)
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(50))
-                                        .background(colorResource(id = R.color.light_gray))
-                                        .padding(horizontal = 24.dp, vertical = 8.dp)
-                                ) {
-                                    Text(
-                                        text = "Смена пароля",
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
+                                Text(
+                                    text = "Смена пароля",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
                             }
+                        }
 
-                            Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(32.dp))
 
-                            PasswordTextField(
-                                label = "Старый пароль",
-                                value = viewModel.current_password,
-                                onValueChange = { viewModel.current_password = it },
-                                errorMessage = viewModel.passwordErrors["current_password"]
-                            )
+                        PasswordTextField(
+                            label = "Старый пароль",
+                            value = viewModel.current_password,
+                            onValueChange = { viewModel.current_password = it },
+                            errorMessage = viewModel.passwordErrors["current_password"]
+                        )
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                            PasswordTextField(
-                                label = "Новый пароль",
-                                value = viewModel.new_password,
-                                onValueChange = { viewModel.new_password = it },
-                                errorMessage = viewModel.passwordErrors["new_password"]
-                            )
+                        PasswordTextField(
+                            label = "Новый пароль",
+                            value = viewModel.new_password,
+                            onValueChange = { viewModel.new_password = it },
+                            errorMessage = viewModel.passwordErrors["new_password"]
+                        )
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                            PasswordTextField(
-                                label = "Подтвердите пароль",
-                                value = viewModel.re_new_password,
-                                onValueChange = { viewModel.re_new_password = it },
-                                errorMessage = viewModel.passwordErrors["re_new_password"]
-                            )
+                        PasswordTextField(
+                            label = "Подтвердите пароль",
+                            value = viewModel.re_new_password,
+                            onValueChange = { viewModel.re_new_password = it },
+                            errorMessage = viewModel.passwordErrors["re_new_password"]
+                        )
 
-                            Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(24.dp))
 
-                            Button(
-                                onClick = {
-                                    viewModel.onChangePassword()
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp),
-                                shape = RoundedCornerShape(50.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = colorResource(id = R.color.darkpurple)
-                                ),
-                                enabled = !viewModel.isLoading
-                            ) {
-                                if (viewModel.isLoading) {
-                                    CircularProgressIndicator(
-                                        color = Color.White,
-                                        strokeWidth = 2.dp,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                } else {
-                                    Text("Изменить пароль", fontSize = 20.sp, color = Color.White)
-                                }
+                        Button(
+                            onClick = {
+                                viewModel.onChangePassword()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp),
+                            shape = RoundedCornerShape(50.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = R.color.darkpurple)
+                            ),
+                            enabled = !viewModel.isLoading
+                        ) {
+                            if (viewModel.isLoading) {
+                                CircularProgressIndicator(
+                                    color = Color.White,
+                                    strokeWidth = 2.dp,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            } else {
+                                Text("Изменить пароль", fontSize = 20.sp, color = Color.White)
                             }
                         }
                     }
                 }
+            }
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -240,9 +242,14 @@ fun PasswordTextField(
             singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
-                val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                val icon =
+                    if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(icon, contentDescription = "Видимость пароля", tint = colorResource(id = R.color.darkpurple))
+                    Icon(
+                        icon,
+                        contentDescription = "Видимость пароля",
+                        tint = colorResource(id = R.color.darkpurple)
+                    )
                 }
             },
             isError = errorMessage != null

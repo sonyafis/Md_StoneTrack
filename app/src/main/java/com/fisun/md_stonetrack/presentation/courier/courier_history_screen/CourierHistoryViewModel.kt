@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.fisun.md_stonetrack.domain.model.Order
 import com.fisun.md_stonetrack.domain.usecase.GetCurrentUserUseCase
 import com.fisun.md_stonetrack.domain.usecase.GetOrdersUseCase
-import com.fisun.md_stonetrack.domain.usecase.LogoutUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,7 +22,6 @@ sealed class CourierHistoryState {
 class CourierHistoryViewModel(
     private val getOrdersUseCase: GetOrdersUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<CourierHistoryState>(CourierHistoryState.Loading)
@@ -32,20 +30,9 @@ class CourierHistoryViewModel(
     var userName by mutableStateOf("")
         private set
 
-    var isRefreshing by mutableStateOf(false)
-        private set
-
     init {
         loadUserName()
         loadHistory()
-    }
-
-    fun refresh() {
-        viewModelScope.launch {
-            isRefreshing = true
-            loadHistory()
-            isRefreshing = false
-        }
     }
 
     private fun loadUserName() {

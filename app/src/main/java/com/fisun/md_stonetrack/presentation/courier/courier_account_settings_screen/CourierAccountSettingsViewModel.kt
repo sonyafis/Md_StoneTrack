@@ -42,7 +42,6 @@ class CourierAccountSettingsViewModel(
 
     fun updateUserData(newData: UserData) {
         viewModelScope.launch {
-            // Здесь будет логика обновления данных через соответствующий use case
             _state.value = AccountSettingsState.Success(newData)
         }
     }

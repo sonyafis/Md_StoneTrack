@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.fisun.md_stonetrack.domain.model.Order
 import com.fisun.md_stonetrack.domain.usecase.GetCurrentUserUseCase
 import com.fisun.md_stonetrack.domain.usecase.GetOrdersUseCase
-import com.fisun.md_stonetrack.domain.usecase.LogoutUseCase
 import com.fisun.md_stonetrack.domain.usecase.SessionExpiredException
 import com.fisun.md_stonetrack.presentation.utils.NotificationHelper
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +23,6 @@ class OrderViewModel(
     private val getOrdersUseCase: GetOrdersUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val notificationHelper: NotificationHelper,
-    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<OrderState>(OrderState.Loading)
@@ -43,19 +41,23 @@ class OrderViewModel(
         newOrders.forEach { newOrder ->
             lastOrders.firstOrNull { it.id_order == newOrder.id_order }?.let { oldOrder ->
                 if (oldOrder.id_status.status_name != newOrder.id_status.status_name) {
-                    Log.i("StatusChange",
+                    Log.i(
+                        "StatusChange",
                         "Status changed for order ${newOrder.order_number}: " +
-                                "${oldOrder.id_status.status_name} -> ${newOrder.id_status.status_name}")
+                                "${oldOrder.id_status.status_name} -> ${newOrder.id_status.status_name}"
+                    )
 
                     viewModelScope.launch(Dispatchers.IO) {
                         try {
                             notificationHelper.showStatusChangeNotification(
                                 orderNumber = newOrder.order_number,
-                                newStatus = newOrder.id_status.status_name // Добавляем новый статус
+                                newStatus = newOrder.id_status.status_name
                             )
                         } catch (e: Exception) {
-                            Log.e("NotificationError",
-                                "Failed to show notification for order ${newOrder.order_number}", e)
+                            Log.e(
+                                "NotificationError",
+                                "Failed to show notification for order ${newOrder.order_number}", e
+                            )
                         }
                     }
                 }
@@ -115,5 +117,7 @@ class OrderViewModel(
         }
     }
 
-    fun stopPolling() { isPollingActive = false }
+    fun stopPolling() {
+        isPollingActive = false
+    }
 }

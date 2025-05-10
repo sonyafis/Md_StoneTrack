@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.courier.courier_history_detail_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -78,7 +78,6 @@ fun CourierHistoryDetailView(
                 .padding(bottom = 80.dp)
         ) {
 
-            // Шапка экрана
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -210,7 +209,8 @@ fun CourierHistoryDetailView(
                                                 .padding(horizontal = 12.dp, vertical = 4.dp)
                                         ) {
                                             Text(
-                                                text = order?.id_status?.status_name ?: "Нет данных",
+                                                text = order?.id_status?.status_name
+                                                    ?: "Нет данных",
                                                 fontSize = 16.sp,
                                                 fontFamily = AppFontFamily,
                                                 fontWeight = FontWeight.Medium,
@@ -246,14 +246,21 @@ fun CourierHistoryDetailView(
                                     )
                                     order?.delivered_at?.let { deliveredAt ->
                                         Text(
-                                            text = "Завершено: ${DateFormatter.formatDateTime(deliveredAt)}",
+                                            text = "Завершено: ${
+                                                DateFormatter.formatDateTime(
+                                                    deliveredAt
+                                                )
+                                            }",
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Medium,
                                             color = Color.Black,
                                             modifier = Modifier.padding(top = 8.dp)
                                         )
                                     }
-                                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
                                         Surface(
                                             shape = RoundedCornerShape(50),
                                             color = Color.Gray,
@@ -266,7 +273,10 @@ fun CourierHistoryDetailView(
                                                 fontSize = 16.sp,
                                                 fontWeight = FontWeight.Bold,
                                                 color = Color.White,
-                                                modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+                                                modifier = Modifier.padding(
+                                                    horizontal = 24.dp,
+                                                    vertical = 12.dp
+                                                )
                                             )
                                         }
                                     }

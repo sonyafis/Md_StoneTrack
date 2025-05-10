@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.client.history_detail_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -78,7 +78,6 @@ fun HistoryDetailView(
                 .padding(bottom = 80.dp)
         ) {
 
-            // Шапка экрана
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,7 +85,6 @@ fun HistoryDetailView(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Кнопка "Назад" слева
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable { navController.popBackStack() }
@@ -211,7 +209,8 @@ fun HistoryDetailView(
                                                 .padding(horizontal = 12.dp, vertical = 4.dp)
                                         ) {
                                             Text(
-                                                text = order?.id_status?.status_name ?: "Нет данных",
+                                                text = order?.id_status?.status_name
+                                                    ?: "Нет данных",
                                                 fontSize = 16.sp,
                                                 fontFamily = AppFontFamily,
                                                 fontWeight = FontWeight.Medium,
@@ -247,7 +246,11 @@ fun HistoryDetailView(
                                     )
                                     order?.delivered_at?.let { deliveredAt ->
                                         Text(
-                                            text = "Завершено: ${DateFormatter.formatDateTime(deliveredAt)}",
+                                            text = "Завершено: ${
+                                                DateFormatter.formatDateTime(
+                                                    deliveredAt
+                                                )
+                                            }",
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Medium,
                                             color = Color.Black,

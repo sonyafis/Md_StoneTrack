@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.client.feedback_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -67,7 +67,6 @@ private fun FeedbackFormScreen(
                 .fillMaxSize()
                 .padding(bottom = 80.dp)
         ) {
-            // Шапка экрана
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -75,7 +74,6 @@ private fun FeedbackFormScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Кнопка "Назад" слева
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable { navController.popBackStack() }
@@ -96,7 +94,6 @@ private fun FeedbackFormScreen(
                     )
                 }
 
-                // Логотип справа
                 Image(
                     painter = painterResource(id = R.drawable.logo_home),
                     contentDescription = "Логотип",
@@ -140,8 +137,8 @@ private fun FeedbackFormScreen(
                             )
                         }
                     }
-                    Column{
-                        Surface (
+                    Column {
+                        Surface(
                             shape = RoundedCornerShape(16.dp),
                             border = BorderStroke(2.dp, colorResource(id = R.color.purple)),
                             color = Color.White,
@@ -151,14 +148,20 @@ private fun FeedbackFormScreen(
                                 .align(Alignment.CenterHorizontally)
                         ) {
                             Column(
-                                verticalArrangement = Arrangement.spacedBy(18.dp), // Добавим отступы между блоками
+                                verticalArrangement = Arrangement.spacedBy(18.dp),
                                 modifier = Modifier
                                     .padding(20.dp)
                             ) {
                                 FeedbackTextField(
                                     label = "Имя и фамилия",
                                     value = state.fullname,
-                                    onValueChange = { viewModel.onEvent(FeedbackEvent.UpdateFullname(it)) }
+                                    onValueChange = {
+                                        viewModel.onEvent(
+                                            FeedbackEvent.UpdateFullname(
+                                                it
+                                            )
+                                        )
+                                    }
                                 )
 
                                 FeedbackTextField(
@@ -175,7 +178,6 @@ private fun FeedbackFormScreen(
                                     onValueChange = { viewModel.onEvent(FeedbackEvent.UpdatePhone(it)) }
                                 )
 
-                                // Поле выбора типа обращения
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
@@ -198,7 +200,13 @@ private fun FeedbackFormScreen(
                                 }
                                 OutlinedTextField(
                                     value = state.message,
-                                    onValueChange = { viewModel.onEvent(FeedbackEvent.UpdateMessage(it)) },
+                                    onValueChange = {
+                                        viewModel.onEvent(
+                                            FeedbackEvent.UpdateMessage(
+                                                it
+                                            )
+                                        )
+                                    },
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(120.dp),
@@ -242,7 +250,6 @@ private fun FeedbackFormScreen(
             }
         }
 
-        // Нижняя навигация
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -266,7 +273,6 @@ private fun FeedbackSuccessScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(bottom = 80.dp)
         ) {
-            // Шапка экрана
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -274,7 +280,6 @@ private fun FeedbackSuccessScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Кнопка "Назад" слева
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable { navController.popBackStack() }
@@ -319,7 +324,6 @@ private fun FeedbackSuccessScreen(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    // Заголовок
                     Text(
                         text = "Новое обращение",
                         fontSize = 24.sp,
@@ -351,7 +355,6 @@ private fun FeedbackSuccessScreen(navController: NavController) {
                         modifier = Modifier.padding(bottom = 32.dp)
                     )
 
-                    // Кнопка "На главную"
                     Button(
                         onClick = { navController.popBackStack() },
                         modifier = Modifier
@@ -372,7 +375,6 @@ private fun FeedbackSuccessScreen(navController: NavController) {
             }
         }
 
-        // Нижняя навигация
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -393,10 +395,11 @@ private fun FeedbackTypeDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val currentSelected = if (selected.isEmpty()) "complaint" else selected
-    val types = listOf("complaint", "suggestion", "inquiry", "praise", "issue", "request", "feedback")
+    val types =
+        listOf("complaint", "suggestion", "inquiry", "praise", "issue", "request", "feedback")
 
     fun getDisplayName(type: String): String {
-        return when(type) {
+        return when (type) {
             "complaint" -> "Жалоба"
             "suggestion" -> "Пожелания"
             "inquiry" -> "Вопрос"
@@ -441,23 +444,25 @@ private fun FeedbackTypeDropdown(
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.background(Color.White))
-            {
-                types.forEach { type ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = getDisplayName(type),
-                                fontSize = 14.sp,
-                                color = colorResource(R.color.purple))
-                        },
-                        onClick = {
-                            onSelect(type)
-                            expanded = false
-                        }
-                    )
-                }
+            modifier = Modifier.background(Color.White)
+        )
+        {
+            types.forEach { type ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = getDisplayName(type),
+                            fontSize = 14.sp,
+                            color = colorResource(R.color.purple)
+                        )
+                    },
+                    onClick = {
+                        onSelect(type)
+                        expanded = false
+                    }
+                )
             }
+        }
     }
 }
 

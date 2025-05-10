@@ -45,14 +45,15 @@ class OrderRepositoryImpl(private val api: ApiService) : OrderRepository {
                         delivered_at = orderDTO.delivered_at
                     )
                 } catch (e: Exception) {
-                    null // Пропускаем проблемные записи
+                    null
                 }
             }
         } catch (e: Exception) {
-            println("Error fetching orders: ${e.message}") // Логирование ошибок
-            emptyList() // Возвращаем пустой список при ошибке сети
+            println("Ошибка при получении заказов: ${e.message}")
+            emptyList()
         }
     }
+
     override suspend fun updateOrderStatus(orderId: Int, newStatusId: Int): Boolean {
         return try {
             apiService.updateOrderStatus(orderId, mapOf("id_status" to newStatusId))

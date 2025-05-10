@@ -8,7 +8,8 @@ object DateFormatter {
     @SuppressLint("SimpleDateFormat")
     fun formatDateTime(isoDate: String): String {
         return try {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX", Locale.getDefault())
+            val inputFormat =
+                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX", Locale.getDefault())
             inputFormat.timeZone = TimeZone.getTimeZone("UTC")
             val date = inputFormat.parse(isoDate)
 

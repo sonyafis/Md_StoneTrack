@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack
 
-import MdStoneTrackTheme
+import com.fisun.md_stonetrack.presentation.theme.MdStoneTrackTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

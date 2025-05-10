@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.client.order_detail_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -209,7 +209,8 @@ fun OrderDetailView(
                                                 .padding(horizontal = 12.dp, vertical = 4.dp)
                                         ) {
                                             Text(
-                                                text = order?.id_status?.status_name ?: "Нет данных",
+                                                text = order?.id_status?.status_name
+                                                    ?: "Нет данных",
                                                 fontSize = 16.sp,
                                                 fontFamily = AppFontFamily,
                                                 fontWeight = FontWeight.Medium,

@@ -30,6 +30,7 @@ class SplashViewModel(
                 is CheckAuthUseCase.AuthResult.Authorized -> {
                     _uiState.value = AuthCheckState.Authorized(result.userRole)
                 }
+
                 is CheckAuthUseCase.AuthResult.Unauthorized -> {
                     _uiState.value = AuthCheckState.Unauthorized
                 }

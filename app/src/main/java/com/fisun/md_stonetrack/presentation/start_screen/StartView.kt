@@ -1,7 +1,7 @@
 package com.fisun.md_stonetrack.presentation.start_screen
 
-import AppFontFamily
-import MdStoneTrackTheme
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.MdStoneTrackTheme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -70,7 +70,6 @@ fun StartView(
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Верхняя часть с увеличенными текстами
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -78,7 +77,6 @@ fun StartView(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
-                    // Заголовок с увеличенным шрифтом
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
@@ -94,67 +92,61 @@ fun StartView(
                         ) {
                             Text(
                                 text = "MD-STONE",
-//                                style = MaterialTheme.typography.headlineLarge,
                                 fontSize = 30.sp,
                                 fontFamily = AppFontFamily,
-                                fontWeight = FontWeight.Bold,// Увеличенный размер
+                                fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "TRACK",
-//                            style = MaterialTheme.typography.headlineLarge,
                             fontSize = 30.sp,
                             fontFamily = AppFontFamily,
-                            fontWeight = FontWeight.Bold,// Увеличенный размер
+                            fontWeight = FontWeight.Bold,
                             color = Color.Black
                         )
                     }
 
-                    // Приветствие с увеличенным шрифтом
                     Text(
                         text = "Здравствуйте!",
-                        style = MaterialTheme.typography.headlineSmall, // Увеличенный размер
+                        style = MaterialTheme.typography.headlineSmall,
                         fontFamily = AppFontFamily,
                         color = Color.Black,
-                        modifier = Modifier.padding(bottom = 15.dp), // Увеличенный отступ
+                        modifier = Modifier.padding(bottom = 15.dp),
                         textAlign = TextAlign.Center
                     )
 
-                    // Описание с увеличенным шрифтом
                     Text(
                         text = "Удобное отслеживание заказов мебели — всегда под рукой!",
                         style = MaterialTheme.typography.headlineSmall,
                         fontFamily = AppFontFamily,
                         color = Color.Black,
-                        modifier = Modifier.padding(bottom = 49.dp), // Увеличенный отступ
+                        modifier = Modifier.padding(bottom = 49.dp),
                         textAlign = TextAlign.Center
                     )
 
-                    // Изображение
                     Image(
                         painter = painterResource(id = R.drawable.package_delivered),
                         contentDescription = "Доставка",
                         modifier = Modifier
-                            .fillMaxWidth(0.9f) // Уменьшенная ширина
-                            .height(200.dp), // Увеличенная высота
+                            .fillMaxWidth(0.9f)
+                            .height(200.dp),
                         contentScale = ContentScale.Fit
                     )
                 }
 
-                // Кнопки (уменьшенные по ширине)
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 40.dp) // Боковые отступы
-                        .padding(bottom = 40.dp), // Боковые отступы
+                        .padding(horizontal = 40.dp)
+                        .padding(bottom = 40.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button(
                         onClick = { viewModel.onLoginClick() },
                         modifier = Modifier
-                            .fillMaxWidth(0.9f) // Уменьшенная ширина
+                            .fillMaxWidth(0.9f)
                             .height(48.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = colorResource(id = R.color.darkpurple)
@@ -174,7 +166,7 @@ fun StartView(
                     OutlinedButton(
                         onClick = { viewModel.onRegisterClick() },
                         modifier = Modifier
-                            .fillMaxWidth(0.9f) // Уменьшенная ширина
+                            .fillMaxWidth(0.9f)
                             .height(48.dp),
                         border = BorderStroke(1.dp, colorResource(id = R.color.darkpurple)),
                         colors = ButtonDefaults.outlinedButtonColors(

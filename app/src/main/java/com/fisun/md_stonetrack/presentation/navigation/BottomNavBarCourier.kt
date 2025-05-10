@@ -14,10 +14,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import com.fisun.md_stonetrack.R
 
-data class BottomNavigationItem(val route: String, val icon: ImageVector? = null, val iconResId: Int? = null)
+data class BottomNavigationItem(
+    val route: String,
+    val icon: ImageVector? = null,
+    val iconResId: Int? = null
+)
 
 @Composable
-fun BottomNavigationBarCourier(navController: NavController, selected: String,  modifier: Modifier = Modifier ) {
+fun BottomNavigationBarCourier(navController: NavController, selected: String) {
     val items = listOf(
         BottomNavigationItem("courier_screen", iconResId = R.drawable.home),
         BottomNavigationItem("courier_history_screen", iconResId = R.drawable.history),
@@ -43,7 +47,8 @@ fun BottomNavigationBarCourier(navController: NavController, selected: String,  
         ) {
             items.forEach { item ->
                 val isSelected = item.route == selected
-                val iconTint = if (isSelected) colorResource(id = R.color.darkpurple) else colorResource(id = R.color.purple)
+                val iconTint =
+                    if (isSelected) colorResource(id = R.color.darkpurple) else colorResource(id = R.color.purple)
 
                 IconButton(
                     onClick = {

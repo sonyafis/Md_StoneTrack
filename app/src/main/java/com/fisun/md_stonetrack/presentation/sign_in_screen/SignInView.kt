@@ -1,6 +1,6 @@
 package com.fisun.md_stonetrack.presentation.sign_in_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -101,7 +101,10 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                     ) {
                         Box(
                             modifier = Modifier
-                                .background(colorResource(id = R.color.darkpurple), shape = RoundedCornerShape(4.dp))
+                                .background(
+                                    colorResource(id = R.color.darkpurple),
+                                    shape = RoundedCornerShape(4.dp)
+                                )
                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                         ) {
                             Text(
@@ -214,7 +217,12 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                                 tag = "TOS",
                                 annotation = "https://docs.google.com/document/d/1AKRq43puxtA5UEcm00QrOwjKmgORwuv1OdHRdeXvC98/edit?usp=sharing"
                             )
-                            withStyle(style = SpanStyle(color = colorResource(id = R.color.darkpurple), fontWeight = FontWeight.Bold)) {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = colorResource(id = R.color.darkpurple),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            ) {
                                 append("пользовательским соглашением")
                             }
                             pop()
@@ -225,7 +233,12 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                                 tag = "Privacy",
                                 annotation = "https://docs.google.com/document/d/1rkNeE6-mZqJFvMPk8E_gcYLYOGSJt5oQZr0-PZa5CAs/edit?usp=sharing"
                             )
-                            withStyle(style = SpanStyle(color = colorResource(id = R.color.darkpurple), fontWeight = FontWeight.Bold)) {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = colorResource(id = R.color.darkpurple),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            ) {
                                 append("политикой конфиденциальности")
                             }
                             pop()
@@ -238,7 +251,8 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                             onClick = { offset ->
                                 annotatedText.getStringAnnotations(start = offset, end = offset)
                                     .firstOrNull()?.let { annotation ->
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                        val intent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
                                         context.startActivity(intent)
                                     }
                             }
@@ -260,7 +274,8 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                             isTermsTouched = true
                             if (isTermsAccepted) {
                                 viewModel.login(username, password)
-                            } },
+                            }
+                        },
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = colorResource(id = R.color.darkpurple),
@@ -287,6 +302,7 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                             text = (uiState as SignInViewModel.AuthUiState.Error).message,
                             color = MaterialTheme.colorScheme.error
                         )
+
                         is SignInViewModel.AuthUiState.Success -> {
                             LaunchedEffect(Unit) {
                                 if (username.lowercase().contains("courier")) {
@@ -296,6 +312,7 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }

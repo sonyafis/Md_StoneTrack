@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HistoryDetailViewModel(
-    private val getOrdersUseCase: GetOrdersUseCase // или отдельный use case для одного заказа
+    private val getOrdersUseCase: GetOrdersUseCase
 ) : ViewModel() {
 
     private val _orderState = MutableStateFlow(HistoryDetailState())

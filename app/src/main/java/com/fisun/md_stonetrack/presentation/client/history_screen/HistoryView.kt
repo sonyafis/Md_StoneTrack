@@ -1,7 +1,6 @@
-// HistoryScreen.kt
 package com.fisun.md_stonetrack.presentation.client.history_screen
 
-import AppFontFamily
+import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,7 +41,8 @@ fun HistoryView(
 
     LaunchedEffect(state) {
         if (state is HistoryState.Error &&
-            (state as HistoryState.Error).message.contains("Сессия истекла")) {
+            (state as HistoryState.Error).message.contains("Сессия истекла")
+        ) {
             navController.navigate("signin") {
                 popUpTo("history_screen") { inclusive = true }
             }
@@ -59,7 +59,6 @@ fun HistoryView(
                 .fillMaxSize()
                 .padding(bottom = 80.dp)
         ) {
-            // Шапка экрана
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -67,7 +66,6 @@ fun HistoryView(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Кнопка "Назад" слева
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable { navController.navigate("orders_screen") }
@@ -88,7 +86,6 @@ fun HistoryView(
                     )
                 }
 
-                // Логотип справа
                 Image(
                     painter = painterResource(id = R.drawable.logo_home),
                     contentDescription = "Логотип",
@@ -97,7 +94,6 @@ fun HistoryView(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Основной контент
             Surface(
                 shape = RoundedCornerShape(32.dp),
                 color = Color.White,
@@ -106,7 +102,6 @@ fun HistoryView(
                     .fillMaxHeight(0.95f)
             ) {
                 Column {
-                    // Заголовок
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -119,7 +114,11 @@ fun HistoryView(
                                 .background(colorResource(id = R.color.light_gray))
                                 .padding(horizontal = 24.dp, vertical = 8.dp)
                         ) {
-                            Text(text = "Завершенные заказы", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "Завершенные заказы",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
 
@@ -203,12 +202,11 @@ fun HistoryView(
             }
         }
 
-        // Нижняя навигация на фоне
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 16.dp)
-                .background(colorResource(id = R.color.purple)) // Обеспечиваем фон
+                .background(colorResource(id = R.color.purple))
         ) {
             BottomNavigationBar(navController, selected = "history_screen")
         }
@@ -230,7 +228,6 @@ fun HistoryCard(order: Order, onClick: () -> Unit) {
         Column(
             modifier = Modifier.padding(12.dp)
         ) {
-            // Номер заказа как заголовок
             Text(
                 text = "Заказ №${order.order_number}",
                 fontSize = 15.sp,
@@ -241,7 +238,6 @@ fun HistoryCard(order: Order, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(2.dp))
 
-            // Разделитель
             Divider(
                 color = Color.LightGray,
                 thickness = 3.dp,
@@ -252,7 +248,6 @@ fun HistoryCard(order: Order, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Информация о заказе
             Text(
                 text = "Адрес: ${order.address}",
                 fontSize = 13.sp,
@@ -271,12 +266,10 @@ fun HistoryCard(order: Order, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Замените текущий Text со статусом на этот код
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(top = 4.dp)
             ) {
-                // Надпись "Статус" (обычный текст)
                 Text(
                     text = "Статус:",
                     fontSize = 13.sp,
@@ -286,7 +279,6 @@ fun HistoryCard(order: Order, onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.width(4.dp))
 
-                // Сам статус с фоном
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(30.dp))
@@ -298,7 +290,7 @@ fun HistoryCard(order: Order, onClick: () -> Unit) {
                         fontSize = 13.sp,
                         fontFamily = AppFontFamily,
                         fontWeight = FontWeight.Medium,
-                        color = Color.White // Цвет текста на фоне
+                        color = Color.White
                     )
                 }
             }

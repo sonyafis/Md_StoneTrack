@@ -53,12 +53,13 @@ class NotificationHelper(private val context: Context) {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setVibrate(VIBRATION_PATTERN)
                 .setAutoCancel(true)
-                .setOnlyAlertOnce(true) // Важно: не дублировать звук/вибрацию
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_STATUS)
                 .build()
 
             val notificationId = generateNotificationId(orderNumber)
-            notificationManager?.notify(notificationId, notification)
+            notificationManager?.notify("orders_tag", notificationId, notification)
 
             Log.d("Notification", "Уведомление показано для заказа $orderNumber")
         } catch (e: Exception) {
@@ -67,6 +68,6 @@ class NotificationHelper(private val context: Context) {
     }
 
     private fun generateNotificationId(orderNumber: String): Int {
-        return orderNumber.hashCode().absoluteValue // Избегаем отрицательных ID
+        return orderNumber.hashCode().absoluteValue
     }
 }

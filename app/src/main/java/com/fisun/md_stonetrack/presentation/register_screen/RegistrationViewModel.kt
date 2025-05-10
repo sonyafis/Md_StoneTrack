@@ -3,6 +3,7 @@ package com.fisun.md_stonetrack.presentation.register_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fisun.md_stonetrack.domain.model.RegistrationResponse
+import com.fisun.md_stonetrack.domain.usecase.CheckEmailExistsUseCase
 import com.fisun.md_stonetrack.domain.usecase.CheckUsernameExistsUseCase
 import com.fisun.md_stonetrack.domain.usecase.RegisterUseCase
 import com.fisun.md_stonetrack.domain.usecase.ValidateRegistrationFieldsUseCase
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 class RegistrationViewModel(
     private val registerUserUseCase: RegisterUseCase,
     private val checkUsernameExistsUseCase: CheckUsernameExistsUseCase,
+    private val checkEmailExistsUseCase: CheckEmailExistsUseCase,
     private val validateRegistrationFieldsUseCase: ValidateRegistrationFieldsUseCase
 ) : ViewModel() {
 
@@ -27,10 +29,6 @@ class RegistrationViewModel(
         data class Success(val userData: RegistrationResponse) : RegistrationUiState()
     }
 
-    fun setError(message: String) {
-        _uiState.value = RegistrationUiState.Error(message)
-    }
-
     fun registerUser(
         username: String,
         email: String,
@@ -42,23 +40,43 @@ class RegistrationViewModel(
         viewModelScope.launch {
             _uiState.value = RegistrationUiState.Loading
 
-            if (checkUsernameExistsUseCase(username)) {
-                _uiState.value = RegistrationUiState.Error("Username already exists")
-                return@launch
-            }
+            try {
+                val usernameExists = checkUsernameExistsUseCase(username)
+                println("Checking email: $email")
+                val emailExists = checkEmailExistsUseCase(email)
+                println("Email exists: $emailExists")
 
-            val result = registerUserUseCase(
-                username,
-                email,
-                password,
-                first_name,
-                last_name,
-                phone_number
-            )
+                when {
+                    usernameExists -> {
+                        _uiState.value = RegistrationUiState.Error("Логин занят")
+                        return@launch
+                    }
 
-            _uiState.value = when {
-                result.isSuccess -> RegistrationUiState.Success(result.getOrNull()!!)
-                else -> RegistrationUiState.Error(result.exceptionOrNull()?.message ?: "Registration failed")
+                    emailExists -> {
+                        _uiState.value =
+                            RegistrationUiState.Error("Пользователь с таким email уже существует")
+                        return@launch
+                    }
+                }
+
+                val result = registerUserUseCase(
+                    username,
+                    email,
+                    password,
+                    first_name,
+                    last_name,
+                    phone_number
+                )
+
+                _uiState.value = if (result.isSuccess) {
+                    RegistrationUiState.Success(result.getOrNull()!!)
+                } else {
+                    RegistrationUiState.Error(
+                        result.exceptionOrNull()?.message ?: "Ошибка регистрации"
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.value = RegistrationUiState.Error("Ошибка сети: ${e.message}")
             }
         }
     }
