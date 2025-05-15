@@ -63,7 +63,7 @@ fun AboutUsView(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { navController.popBackStack() }
+                    modifier = Modifier.clickable { navController.navigate("orders_screen") }
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,

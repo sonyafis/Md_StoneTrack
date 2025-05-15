@@ -1,5 +1,6 @@
 package com.fisun.md_stonetrack.presentation.register_screen
 
+import android.R.attr.label
 import com.fisun.md_stonetrack.presentation.theme.AppFontFamily
 import android.content.Intent
 import android.net.Uri
@@ -50,6 +51,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -290,6 +292,7 @@ fun RegistrationView(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         androidx.compose.material3.Checkbox(
+                            modifier = Modifier.testTag("TermsCheckbox"),
                             checked = isTermsAccepted,
                             onCheckedChange = {
                                 isTermsAccepted = it
@@ -351,7 +354,7 @@ fun RegistrationView(
                             text = "Вы должны принять условия соглашения",
                             color = MaterialTheme.colorScheme.error,
                             fontSize = 12.sp,
-                            modifier = Modifier.padding(start = 16.dp, top = 2.dp)
+                            modifier = Modifier.padding(start = 16.dp, top = 2.dp).testTag("TermsErrorText")
                         )
                     }
 
@@ -385,7 +388,8 @@ fun RegistrationView(
                             text = "Зарегистрироваться",
                             fontFamily = AppFontFamily,
                             fontSize = 16.sp,
-                            color = Color.White
+                            color = Color.White,
+                            modifier = Modifier.testTag("registerButton")
                         )
                     }
 
@@ -410,10 +414,10 @@ fun RegistrationView(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.clickable {
                                 navController.navigate("signin") {
-                                    popUpTo("registration_screen") { inclusive = true }
+                                    popUpTo("register") { inclusive = true }
                                     launchSingleTop = true
                                 }
-                            }
+                            } .testTag("loginButton")
                         )
                     }
                     when (val state = uiState) {
@@ -429,6 +433,7 @@ fun RegistrationView(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp, vertical = 8.dp)
+                                    .testTag("${label}ErrorText")
                             )
                         }
 
@@ -470,6 +475,7 @@ private fun RegistrationTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(58.dp)
+                .testTag("${label}Field")
                 .onFocusChanged { focusState ->
                     if (focusState.isFocused || value.isNotEmpty()) {
                         isFieldTouched = true

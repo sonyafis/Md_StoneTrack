@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -174,6 +175,7 @@ fun ChangePasswordView(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .testTag("changePasswordButton")
                                 .height(50.dp),
                             shape = RoundedCornerShape(50.dp),
                             colors = ButtonDefaults.buttonColors(
@@ -229,7 +231,7 @@ fun PasswordTextField(
             value = value,
             onValueChange = onValueChange,
             label = { Text(label) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("${label}Field"),
             shape = RoundedCornerShape(50.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = if (errorMessage == null) colorResource(id = R.color.purple) else MaterialTheme.colorScheme.error,
@@ -260,7 +262,7 @@ fun PasswordTextField(
                 text = it,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp).testTag("${label}ErrorText")
             )
         }
     }

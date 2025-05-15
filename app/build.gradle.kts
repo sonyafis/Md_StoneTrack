@@ -13,8 +13,8 @@ android {
         applicationId = "com.fisun.md_stonetrack"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.2"
+        versionCode = 4
+        versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -47,51 +47,31 @@ android {
 }
 
 dependencies {
-    // Jetpack Compose BOM — рекомендуемый способ подключения (все версии синхронизированы)
     implementation(platform("androidx.compose:compose-bom:2025.01.00"))
     implementation("androidx.compose.compiler:compiler:1.5.10")
-    // Основные компоненты Compose
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-
-    // Compose Activity
     implementation(libs.androidx.activity.compose)
-
-    // Для работы с ViewModel в Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-
-    // Интерактивный предпросмотр в Android Studio
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    // Для тестов Compose
     androidTestImplementation(libs.androidx.ui.test.junit4)
-
-    //koin
     implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose)
-    //Retrofit
     implementation(libs.retrofit)
-    implementation(libs.converter.gson) // Для преобразования JSON с использованием Gson
+    implementation(libs.converter.gson)
     implementation(libs.okhttp)
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
-    //RecyclerView (Отображение списков)
     implementation(libs.androidx.recyclerview)
-    //ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    // Room (для локальной базы данных)
     implementation(libs.androidx.room.runtime)
     kapt("androidx.room:room-compiler:2.6.1")
-    implementation(libs.androidx.room.ktx) // Coroutines поддержка
-    // Navigation Compose
-    implementation(libs.androidx.navigation.compose) // Актуальная версия для Compose
-    // Material Icons Extended (для иконок)
-    implementation(libs.androidx.material.icons.extended) // Совместима с вашим compose-bom
-    // Kotlinx Serialization
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.kotlinx.serialization.json)
-    // DataStore (Preferences)
     implementation(libs.androidx.datastore.preferences)
     implementation("com.google.accompanist:accompanist-swiperefresh:0.33.2-alpha")
     implementation(libs.androidx.core.ktx)
@@ -102,4 +82,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.1")
+    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.7.4")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestImplementation("org.mockito:mockito-android:5.3.1")
+    androidTestImplementation("org.mockito:mockito-core:5.5.0")
+    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+
 }

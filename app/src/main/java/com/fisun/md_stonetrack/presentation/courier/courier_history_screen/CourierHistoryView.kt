@@ -68,7 +68,7 @@ fun CourierHistoryView(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { navController.navigate("orders_screen") }) {
+                    modifier = Modifier.clickable { navController.navigate("courier_screen") }) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "На главную",

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -142,7 +143,7 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                         onValueChange = { username = it },
                         label = { Text("Логин", fontFamily = AppFontFamily) },
                         shape = RoundedCornerShape(50),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().testTag("ЛогинField"),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = colorResource(id = R.color.purple),
                             unfocusedBorderColor = colorResource(id = R.color.purple),
@@ -158,7 +159,7 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                         label = { Text("Пароль", fontFamily = AppFontFamily) },
                         shape = RoundedCornerShape(50),
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().testTag("ПарольField"),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = colorResource(id = R.color.purple),
                             unfocusedBorderColor = colorResource(id = R.color.purple),
@@ -188,6 +189,7 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                         modifier = Modifier
                             .align(Alignment.End)
                             .clickable { navController.navigate("reset_password") }
+                            .testTag("resetPasswordButton")
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -203,6 +205,7 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                     ) {
                         Checkbox(
                             checked = isTermsAccepted,
+                            modifier = Modifier.testTag("TermsCheckbox"),
                             onCheckedChange = {
                                 isTermsAccepted = it
                                 isTermsTouched = true
@@ -297,7 +300,9 @@ fun SignInView(navController: NavController, viewModel: SignInViewModel = koinVi
                     Spacer(modifier = Modifier.height(16.dp))
 
                     when (uiState) {
-                        is SignInViewModel.AuthUiState.Loading -> CircularProgressIndicator()
+                        is SignInViewModel.AuthUiState.Loading -> CircularProgressIndicator(
+                            modifier = Modifier.testTag("ProgressBar")
+                        )
                         is SignInViewModel.AuthUiState.Error -> Text(
                             text = (uiState as SignInViewModel.AuthUiState.Error).message,
                             color = MaterialTheme.colorScheme.error

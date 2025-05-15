@@ -30,6 +30,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -133,7 +134,9 @@ private fun FeedbackFormScreen(
                             Text(
                                 text = "Обратная связь",
                                 fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .testTag("Обратная связь")
                             )
                         }
                     }
@@ -155,6 +158,7 @@ private fun FeedbackFormScreen(
                                 FeedbackTextField(
                                     label = "Имя и фамилия",
                                     value = state.fullname,
+                                    modifier = Modifier.testTag("fullNameField"),
                                     onValueChange = {
                                         viewModel.onEvent(
                                             FeedbackEvent.UpdateFullname(
@@ -168,6 +172,7 @@ private fun FeedbackFormScreen(
                                     label = "Email",
                                     value = state.email,
                                     keyboardType = KeyboardType.Email,
+                                    modifier = Modifier.testTag("EmailField"),
                                     onValueChange = { viewModel.onEvent(FeedbackEvent.UpdateEmail(it)) }
                                 )
 
@@ -175,11 +180,12 @@ private fun FeedbackFormScreen(
                                     label = "Номер телефона",
                                     value = state.phone,
                                     keyboardType = KeyboardType.Phone,
+                                    modifier = Modifier.testTag("Номер телефонаField"),
                                     onValueChange = { viewModel.onEvent(FeedbackEvent.UpdatePhone(it)) }
                                 )
 
                                 Row(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier.fillMaxWidth().testTag("Тип обращенияField"),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
@@ -214,7 +220,8 @@ private fun FeedbackFormScreen(
                                     label = {
                                         Text(
                                             text = "Сообщение",
-                                            color = colorResource(R.color.purple)
+                                            color = colorResource(R.color.purple),
+                                            modifier = Modifier.testTag("СообщениеField")
                                         )
                                     },
                                     colors = OutlinedTextFieldDefaults.colors(
@@ -242,7 +249,8 @@ private fun FeedbackFormScreen(
                             Text(
                                 text = "Отправить обращение",
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.testTag("Отправить обращениеField")
                             )
                         }
                     }
@@ -356,7 +364,7 @@ private fun FeedbackSuccessScreen(navController: NavController) {
                     )
 
                     Button(
-                        onClick = { navController.popBackStack() },
+                        onClick = { navController.navigate("orders_screen") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp),
@@ -472,6 +480,7 @@ fun FeedbackTextField(
     value: String,
     singleLine: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text,
+    modifier: Modifier,
     onValueChange: (String) -> Unit
 ) {
     OutlinedTextField(
